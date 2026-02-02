@@ -1,3 +1,8 @@
+# Updated Chat App with Modular Firebase SDK
+
+The code now uses the modern modular Firebase SDK (v9+) instead of the compat version. This provides better tree-shaking and smaller bundle sizes.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,7 +71,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -82,7 +86,6 @@
       background: var(--border-strong);
     }
 
-    /* Typography */
     h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; }
     h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
     h3 { font-size: 14px; font-weight: 600; }
@@ -122,7 +125,6 @@
       color: var(--text-tertiary);
     }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -185,7 +187,6 @@
       border-radius: var(--radius-md);
     }
 
-    /* Form Groups */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -209,7 +210,6 @@
       color: var(--text-tertiary);
     }
 
-    /* App Layout */
     #app {
       height: 100%;
       display: flex;
@@ -222,7 +222,6 @@
       overflow: hidden;
     }
 
-    /* Auth Screens */
     .auth-screen {
       display: flex;
       align-items: center;
@@ -326,36 +325,6 @@
       text-decoration: underline;
     }
 
-    /* Phone Auth */
-    .phone-input-group {
-      display: flex;
-      gap: 8px;
-    }
-
-    .phone-country {
-      width: 80px;
-      flex-shrink: 0;
-    }
-
-    .phone-number {
-      flex: 1;
-    }
-
-    .verification-code {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-    }
-
-    .verification-code input {
-      width: 48px;
-      height: 56px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    /* Server Sidebar */
     .server-sidebar {
       width: var(--sidebar-width);
       height: 100%;
@@ -440,7 +409,6 @@
       color: var(--text-primary);
     }
 
-    /* Channel Sidebar */
     .channel-sidebar {
       width: var(--channel-width);
       height: 100%;
@@ -550,7 +518,6 @@
       display: flex;
     }
 
-    /* User Panel */
     .user-panel {
       height: 52px;
       padding: 8px;
@@ -608,7 +575,6 @@
       gap: 2px;
     }
 
-    /* Main Content */
     .main-content {
       flex: 1;
       display: flex;
@@ -661,7 +627,6 @@
       gap: 8px;
     }
 
-    /* Messages */
     .messages-container {
       flex: 1;
       overflow-y: auto;
@@ -833,7 +798,6 @@
       height: 18px;
     }
 
-    /* Message Input */
     .message-input-container {
       padding: 0 16px 24px;
       flex-shrink: 0;
@@ -895,7 +859,6 @@
       box-shadow: none;
     }
 
-    /* Image Preview */
     .image-preview {
       display: none;
       padding: 12px;
@@ -933,7 +896,6 @@
       color: #ff4444;
     }
 
-    /* Empty States */
     .empty-state {
       flex: 1;
       display: flex;
@@ -951,6 +913,11 @@
       color: var(--text-muted);
     }
 
+    .empty-state-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
     .empty-state-title {
       font-size: 20px;
       font-weight: 600;
@@ -963,7 +930,6 @@
       margin-bottom: 24px;
     }
 
-    /* DM List */
     .dm-header {
       padding: 12px 16px;
       display: flex;
@@ -1023,7 +989,6 @@
       white-space: nowrap;
     }
 
-    /* Member Sidebar */
     .member-sidebar {
       width: var(--member-width);
       height: 100%;
@@ -1090,7 +1055,6 @@
       color: var(--text-tertiary);
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -1156,7 +1120,6 @@
       gap: 12px;
     }
 
-    /* Toasts */
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -1203,7 +1166,6 @@
       }
     }
 
-    /* Profile Card */
     .profile-card {
       position: fixed;
       width: 340px;
@@ -1260,7 +1222,6 @@
       margin-top: 12px;
     }
 
-    /* Context Menu */
     .context-menu {
       position: fixed;
       min-width: 180px;
@@ -1313,7 +1274,6 @@
       margin: 6px 0;
     }
 
-    /* Loading */
     .loading-spinner {
       width: 20px;
       height: 20px;
@@ -1339,7 +1299,6 @@
       100% { background-position: -200% 0; }
     }
 
-    /* Mobile */
     .mobile-nav {
       display: none;
       position: fixed;
@@ -1481,7 +1440,6 @@
       }
     }
 
-    /* Invite Modal Specific */
     .invite-code {
       display: flex;
       align-items: center;
@@ -1500,7 +1458,6 @@
       letter-spacing: 2px;
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
       gap: 4px;
@@ -1529,7 +1486,6 @@
       color: var(--text-primary);
     }
 
-    /* Hidden */
     .hidden {
       display: none !important;
     }
@@ -1703,18 +1659,48 @@
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- Firebase Modular SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signInWithPopup,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signInWithPhoneNumber,
+      updateProfile,
+      signOut,
+      GoogleAuthProvider,
+      RecaptchaVerifier
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { 
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs,
+      setDoc,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      query,
+      where,
+      orderBy,
+      limit,
+      limitToLast,
+      onSnapshot,
+      serverTimestamp,
+      arrayUnion,
+      arrayRemove,
+      writeBatch
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-  <script>
     // ============================================
-    // CONFIGURATION
+    // FIREBASE CONFIGURATION
     // ============================================
     const firebaseConfig = {
-      // Replace with your Firebase config
-      apiKey: "AIzaSyBJMIUucxOusoVzs4lc-QurCxjlW6Hlsuw"",
+      apiKey: "AIzaSyBJMIUucxOusoVzs4lc-QurCxjlW6Hlsuw",
       authDomain: "chat-5f0bf.firebaseapp.com",
       projectId: "chat-5f0bf",
       storageBucket: "chat-5f0bf.firebasestorage.app",
@@ -1722,9 +1708,9 @@
       appId: "1:211425841353:web:e1c271a340d73abd0cfd18"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     // ============================================
     // STATE MANAGEMENT
@@ -1740,7 +1726,7 @@
       messages: [],
       members: [],
       dms: [],
-      view: 'auth', // auth, home, server, dm
+      view: 'auth',
       
       listeners: new Map(),
       
@@ -1931,33 +1917,6 @@
         }, 3000);
       },
       
-      showContextMenu(x, y, items) {
-        const menu = document.getElementById('context-menu');
-        menu.innerHTML = items.map(item => {
-          if (item.divider) return '<div class="context-menu-divider"></div>';
-          return `<div class="context-menu-item ${item.danger ? 'danger' : ''}" data-action="${item.action}">
-            ${item.icon ? Icons[item.icon] : ''}
-            <span>${item.label}</span>
-          </div>`;
-        }).join('');
-        
-        menu.style.left = `${Math.min(x, window.innerWidth - 200)}px`;
-        menu.style.top = `${Math.min(y, window.innerHeight - menu.offsetHeight - 20)}px`;
-        menu.classList.add('active');
-        
-        const handleClick = (e) => {
-          const action = e.target.closest('.context-menu-item')?.dataset.action;
-          if (action) {
-            const item = items.find(i => i.action === action);
-            if (item?.handler) item.handler();
-          }
-          menu.classList.remove('active');
-          document.removeEventListener('click', handleClick);
-        };
-        
-        setTimeout(() => document.addEventListener('click', handleClick), 0);
-      },
-      
       avatar(user, size = 40) {
         if (user?.avatar) {
           return `<img src="${Utils.escapeHtml(user.avatar)}" alt="">`;
@@ -1965,6 +1924,9 @@
         return `<span class="user-avatar-placeholder">${Utils.getInitials(user?.displayName || 'U')}</span>`;
       }
     };
+
+    // Make UI available globally for onclick handlers
+    window.UI = UI;
 
     // ============================================
     // AUTH MODULE
@@ -1974,8 +1936,8 @@
       
       async signInWithGoogle() {
         try {
-          const provider = new firebase.auth.GoogleAuthProvider();
-          await auth.signInWithPopup(provider);
+          const provider = new GoogleAuthProvider();
+          await signInWithPopup(auth, provider);
         } catch (error) {
           UI.showToast(error.message, 'error');
         }
@@ -1983,7 +1945,7 @@
       
       async signInWithEmail(email, password) {
         try {
-          await auth.signInWithEmailAndPassword(email, password);
+          await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
           UI.showToast(error.message, 'error');
         }
@@ -1991,17 +1953,22 @@
       
       async signUpWithEmail(email, password, displayName) {
         try {
-          const { user } = await auth.createUserWithEmailAndPassword(email, password);
-          await user.updateProfile({ displayName });
+          const { user } = await createUserWithEmailAndPassword(auth, email, password);
+          await updateProfile(user, { displayName });
           await Profile.createProfile(user.uid, displayName);
         } catch (error) {
           UI.showToast(error.message, 'error');
         }
       },
       
-      async sendPhoneCode(phoneNumber, recaptchaVerifier) {
+      async sendPhoneCode(phoneNumber) {
         try {
-          this.confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
+          if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+              size: 'normal'
+            });
+          }
+          this.confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
           return true;
         } catch (error) {
           UI.showToast(error.message, 'error');
@@ -2017,8 +1984,8 @@
         }
       },
       
-      async signOut() {
-        await auth.signOut();
+      async logOut() {
+        await signOut(auth);
         State.clearListeners();
       },
       
@@ -2115,9 +2082,9 @@
       },
       
       bindEvents() {
-        const app = document.getElementById('app');
+        const appEl = document.getElementById('app');
         
-        app.addEventListener('click', async (e) => {
+        appEl.addEventListener('click', async (e) => {
           if (e.target.id === 'google-signin') {
             await this.signInWithGoogle();
           }
@@ -2148,19 +2115,11 @@
           if (e.target.id === 'phone-signin-btn') {
             document.getElementById('auth-form-login').classList.add('hidden');
             document.getElementById('auth-form-phone').classList.remove('hidden');
-            
-            if (!window.recaptchaVerifier) {
-              window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                size: 'normal',
-                callback: () => {}
-              });
-              window.recaptchaVerifier.render();
-            }
           }
           
-          if (e.target.id === 'send-code-btn') {
+                  if (e.target.id === 'send-code-btn') {
             const phone = document.getElementById('phone-number').value;
-            const success = await this.sendPhoneCode(phone, window.recaptchaVerifier);
+            const success = await this.sendPhoneCode(phone);
             if (success) {
               document.getElementById('verify-code-group').classList.remove('hidden');
               document.getElementById('verify-code-btn').classList.remove('hidden');
@@ -2186,18 +2145,18 @@
     // ============================================
     const Profile = {
       async createProfile(uid, displayName) {
-        await db.collection('users').doc(uid).set({
+        await setDoc(doc(db, 'users', uid), {
           displayName,
           avatar: null,
           bio: '',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         });
       },
       
       async loadProfile(uid) {
-        const doc = await db.collection('users').doc(uid).get();
-        if (doc.exists) {
-          State.set('profile', { id: uid, ...doc.data() });
+        const docSnap = await getDoc(doc(db, 'users', uid));
+        if (docSnap.exists()) {
+          State.set('profile', { id: uid, ...docSnap.data() });
         } else {
           await this.createProfile(uid, State.user.displayName || 'User');
           await this.loadProfile(uid);
@@ -2205,14 +2164,14 @@
       },
       
       async updateProfile(data) {
-        await db.collection('users').doc(State.user.uid).update(data);
+        await updateDoc(doc(db, 'users', State.user.uid), data);
         State.set('profile', { ...State.profile, ...data });
         UI.showToast('Profile updated');
       },
       
       async getUser(uid) {
-        const doc = await db.collection('users').doc(uid).get();
-        return doc.exists ? { id: uid, ...doc.data() } : null;
+        const docSnap = await getDoc(doc(db, 'users', uid));
+        return docSnap.exists() ? { id: uid, ...docSnap.data() } : null;
       }
     };
 
@@ -2221,34 +2180,36 @@
     // ============================================
     const Servers = {
       async loadServers() {
-        const unsub = db.collection('servers')
-          .where('members', 'array-contains', State.user.uid)
-          .onSnapshot(snapshot => {
-            const servers = [];
-            snapshot.forEach(doc => {
-              servers.push({ id: doc.id, ...doc.data() });
-            });
-            State.set('servers', servers);
-            App.renderServerList();
+        const q = query(
+          collection(db, 'servers'),
+          where('members', 'array-contains', State.user.uid)
+        );
+        
+        const unsub = onSnapshot(q, (snapshot) => {
+          const servers = [];
+          snapshot.forEach(doc => {
+            servers.push({ id: doc.id, ...doc.data() });
           });
+          State.set('servers', servers);
+          App.renderServerList();
+        });
         
         State.addListener('servers', unsub);
       },
       
       async create(name) {
         const inviteCode = Utils.generateInviteCode();
-        const docRef = await db.collection('servers').add({
+        const docRef = await addDoc(collection(db, 'servers'), {
           name,
           ownerId: State.user.uid,
           inviteCode,
           members: [State.user.uid],
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         });
         
-        // Create default channel
-        await db.collection('servers').doc(docRef.id).collection('channels').add({
+        await addDoc(collection(db, 'servers', docRef.id, 'channels'), {
           name: 'general',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         });
         
         UI.showToast('Server created');
@@ -2257,10 +2218,13 @@
       },
       
       async join(code) {
-        const snapshot = await db.collection('servers')
-          .where('inviteCode', '==', code.toUpperCase())
-          .limit(1)
-          .get();
+        const q = query(
+          collection(db, 'servers'),
+          where('inviteCode', '==', code.toUpperCase()),
+          limit(1)
+        );
+        
+        const snapshot = await getDocs(q);
         
         if (snapshot.empty) {
           UI.showToast('Invalid invite code', 'error');
@@ -2275,8 +2239,8 @@
           return;
         }
         
-        await db.collection('servers').doc(serverDoc.id).update({
-          members: firebase.firestore.FieldValue.arrayUnion(State.user.uid)
+        await updateDoc(doc(db, 'servers', serverDoc.id), {
+          members: arrayUnion(State.user.uid)
         });
         
         UI.showToast('Joined server!');
@@ -2284,20 +2248,19 @@
       },
       
       async update(serverId, data) {
-        await db.collection('servers').doc(serverId).update(data);
+        await updateDoc(doc(db, 'servers', serverId), data);
         UI.showToast('Server updated');
       },
       
       async delete(serverId) {
         if (!confirm('Are you sure you want to delete this server? This cannot be undone.')) return;
         
-        // Delete all channels and messages (in production, use Cloud Functions)
-        const channels = await db.collection('servers').doc(serverId).collection('channels').get();
-        const batch = db.batch();
-        channels.forEach(doc => batch.delete(doc.ref));
+        const channelsSnapshot = await getDocs(collection(db, 'servers', serverId, 'channels'));
+        const batch = writeBatch(db);
+        channelsSnapshot.forEach(docSnap => batch.delete(docSnap.ref));
         await batch.commit();
         
-        await db.collection('servers').doc(serverId).delete();
+        await deleteDoc(doc(db, 'servers', serverId));
         
         State.set('currentServer', null);
         State.set('currentChannel', null);
@@ -2307,8 +2270,8 @@
       },
       
       async leave(serverId) {
-        await db.collection('servers').doc(serverId).update({
-          members: firebase.firestore.FieldValue.arrayRemove(State.user.uid)
+        await updateDoc(doc(db, 'servers', serverId), {
+          members: arrayRemove(State.user.uid)
         });
         
         State.set('currentServer', null);
@@ -2324,23 +2287,25 @@
     // ============================================
     const Channels = {
       async loadChannels(serverId) {
-        const unsub = db.collection('servers').doc(serverId).collection('channels')
-          .orderBy('createdAt')
-          .onSnapshot(snapshot => {
-            const channels = [];
-            snapshot.forEach(doc => {
-              channels.push({ id: doc.id, ...doc.data() });
-            });
-            State.set('channels', channels);
-            
-            // Auto-select first channel if none selected
-            if (!State.currentChannel && channels.length > 0) {
-              State.set('currentChannel', channels[0]);
-              Messages.loadMessages(serverId, channels[0].id);
-            }
-            
-            App.renderChannelList();
+        const q = query(
+          collection(db, 'servers', serverId, 'channels'),
+          orderBy('createdAt')
+        );
+        
+        const unsub = onSnapshot(q, (snapshot) => {
+          const channels = [];
+          snapshot.forEach(doc => {
+            channels.push({ id: doc.id, ...doc.data() });
           });
+          State.set('channels', channels);
+          
+          if (!State.currentChannel && channels.length > 0) {
+            State.set('currentChannel', channels[0]);
+            Messages.loadMessages(serverId, channels[0].id);
+          }
+          
+          App.renderChannelList();
+        });
         
         State.addListener('channels', unsub);
       },
@@ -2348,9 +2313,9 @@
       async create(serverId, name) {
         const cleanName = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         
-        await db.collection('servers').doc(serverId).collection('channels').add({
+        await addDoc(collection(db, 'servers', serverId, 'channels'), {
           name: cleanName,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         });
         
         UI.showToast('Channel created');
@@ -2358,7 +2323,7 @@
       },
       
       async delete(serverId, channelId) {
-        await db.collection('servers').doc(serverId).collection('channels').doc(channelId).delete();
+        await deleteDoc(doc(db, 'servers', serverId, 'channels', channelId));
         
         if (State.currentChannel?.id === channelId) {
           State.set('currentChannel', State.channels[0] || null);
@@ -2378,19 +2343,20 @@
       async loadMessages(serverId, channelId) {
         State.set('messages', []);
         
-        const unsub = db.collection('servers').doc(serverId)
-          .collection('channels').doc(channelId)
-          .collection('messages')
-          .orderBy('createdAt', 'asc')
-          .limitToLast(100)
-          .onSnapshot(snapshot => {
-            const messages = [];
-            snapshot.forEach(doc => {
-              messages.push({ id: doc.id, ...doc.data() });
-            });
-            State.set('messages', messages);
-            App.renderMessages();
+        const q = query(
+          collection(db, 'servers', serverId, 'channels', channelId, 'messages'),
+          orderBy('createdAt', 'asc'),
+          limitToLast(100)
+        );
+        
+        const unsub = onSnapshot(q, (snapshot) => {
+          const messages = [];
+          snapshot.forEach(doc => {
+            messages.push({ id: doc.id, ...doc.data() });
           });
+          State.set('messages', messages);
+          App.renderMessages();
+        });
         
         State.addListener('messages', unsub);
       },
@@ -2398,18 +2364,20 @@
       async loadDMMessages(conversationId) {
         State.set('messages', []);
         
-        const unsub = db.collection('dms').doc(conversationId)
-          .collection('messages')
-          .orderBy('createdAt', 'asc')
-          .limitToLast(100)
-          .onSnapshot(snapshot => {
-            const messages = [];
-            snapshot.forEach(doc => {
-              messages.push({ id: doc.id, ...doc.data() });
-            });
-            State.set('messages', messages);
-            App.renderMessages();
+        const q = query(
+          collection(db, 'dms', conversationId, 'messages'),
+          orderBy('createdAt', 'asc'),
+          limitToLast(100)
+        );
+        
+        const unsub = onSnapshot(q, (snapshot) => {
+          const messages = [];
+          snapshot.forEach(doc => {
+            messages.push({ id: doc.id, ...doc.data() });
           });
+          State.set('messages', messages);
+          App.renderMessages();
+        });
         
         State.addListener('messages', unsub);
       },
@@ -2422,7 +2390,7 @@
           authorId: State.user.uid,
           authorName: State.profile.displayName,
           authorAvatar: State.profile.avatar,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         };
         
         if (imageUrl) {
@@ -2430,12 +2398,15 @@
         }
         
         if (State.view === 'server' && State.currentServer && State.currentChannel) {
-          await db.collection('servers').doc(State.currentServer.id)
-            .collection('channels').doc(State.currentChannel.id)
-            .collection('messages').add(messageData);
+          await addDoc(
+            collection(db, 'servers', State.currentServer.id, 'channels', State.currentChannel.id, 'messages'),
+            messageData
+          );
         } else if (State.view === 'dm' && State.currentDM) {
-          await db.collection('dms').doc(State.currentDM.id)
-            .collection('messages').add(messageData);
+          await addDoc(
+            collection(db, 'dms', State.currentDM.id, 'messages'),
+            messageData
+          );
         }
         
         this.pendingImage = null;
@@ -2443,15 +2414,12 @@
       
       async edit(messageId, newContent) {
         const path = State.view === 'server'
-          ? db.collection('servers').doc(State.currentServer.id)
-              .collection('channels').doc(State.currentChannel.id)
-              .collection('messages').doc(messageId)
-          : db.collection('dms').doc(State.currentDM.id)
-              .collection('messages').doc(messageId);
+          ? doc(db, 'servers', State.currentServer.id, 'channels', State.currentChannel.id, 'messages', messageId)
+          : doc(db, 'dms', State.currentDM.id, 'messages', messageId);
         
-        await path.update({
+        await updateDoc(path, {
           content: newContent,
-          editedAt: firebase.firestore.FieldValue.serverTimestamp()
+          editedAt: serverTimestamp()
         });
         
         UI.closeModal('modal-edit-message');
@@ -2462,13 +2430,10 @@
         if (!confirm('Delete this message?')) return;
         
         const path = State.view === 'server'
-          ? db.collection('servers').doc(State.currentServer.id)
-              .collection('channels').doc(State.currentChannel.id)
-              .collection('messages').doc(messageId)
-          : db.collection('dms').doc(State.currentDM.id)
-              .collection('messages').doc(messageId);
+          ? doc(db, 'servers', State.currentServer.id, 'channels', State.currentChannel.id, 'messages', messageId)
+          : doc(db, 'dms', State.currentDM.id, 'messages', messageId);
         
-        await path.delete();
+        await deleteDoc(path);
         UI.showToast('Message deleted');
       }
     };
@@ -2478,25 +2443,27 @@
     // ============================================
     const DMs = {
       async loadDMs() {
-        const unsub = db.collection('dms')
-          .where('participants', 'array-contains', State.user.uid)
-          .onSnapshot(async snapshot => {
-            const dms = [];
-            for (const doc of snapshot.docs) {
-              const data = doc.data();
-              const otherUserId = data.participants.find(id => id !== State.user.uid);
-              const otherUser = await Profile.getUser(otherUserId);
-              dms.push({ id: doc.id, ...data, otherUser });
-            }
-            State.set('dms', dms);
-            App.renderDMList();
-          });
+        const q = query(
+          collection(db, 'dms'),
+          where('participants', 'array-contains', State.user.uid)
+        );
+        
+        const unsub = onSnapshot(q, async (snapshot) => {
+          const dms = [];
+          for (const docSnap of snapshot.docs) {
+            const data = docSnap.data();
+            const otherUserId = data.participants.find(id => id !== State.user.uid);
+            const otherUser = await Profile.getUser(otherUserId);
+            dms.push({ id: docSnap.id, ...data, otherUser });
+          }
+          State.set('dms', dms);
+          App.renderDMList();
+        });
         
         State.addListener('dms', unsub);
       },
       
       async startDM(otherUserId) {
-        // Check if DM already exists
         const existing = State.dms.find(dm => 
           dm.participants.includes(otherUserId)
         );
@@ -2508,10 +2475,9 @@
           return;
         }
         
-        // Create new DM
-        const docRef = await db.collection('dms').add({
+        const docRef = await addDoc(collection(db, 'dms'), {
           participants: [State.user.uid, otherUserId],
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         });
         
         const otherUser = await Profile.getUser(otherUserId);
@@ -2553,7 +2519,7 @@
         Auth.bindEvents();
         this.bindGlobalEvents();
         
-        auth.onAuthStateChanged(async (user) => {
+        onAuthStateChanged(auth, async (user) => {
           if (user) {
             State.set('user', user);
             await Profile.loadProfile(user.uid);
@@ -2777,14 +2743,13 @@
           return;
         }
         
-        // Group messages by author and time
         const groupedMessages = [];
         State.messages.forEach((msg, idx) => {
           const prev = State.messages[idx - 1];
           const shouldStack = prev && 
             prev.authorId === msg.authorId && 
             msg.createdAt && prev.createdAt &&
-            (msg.createdAt.toDate?.() - prev.createdAt.toDate?.() < 300000); // 5 min
+            (msg.createdAt.toDate?.() - prev.createdAt.toDate?.() < 300000);
           
           if (shouldStack) {
             groupedMessages[groupedMessages.length - 1].messages.push(msg);
@@ -2867,16 +2832,18 @@
           </div>
         `;
         
-        // Scroll to bottom
         const messagesContainer = document.getElementById('messages-container');
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (messagesContainer) {
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
         
-        // Auto-resize textarea
         const textarea = document.getElementById('message-input');
-        textarea.addEventListener('input', () => {
-          textarea.style.height = 'auto';
-          textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
-        });
+        if (textarea) {
+          textarea.addEventListener('input', () => {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+          });
+        }
       },
       
       renderMemberList() {
@@ -2914,7 +2881,6 @@
       },
       
       bindGlobalEvents() {
-        // Modal tabs
         document.getElementById('server-modal-tabs')?.addEventListener('click', (e) => {
           const tab = e.target.dataset.tab;
           if (!tab) return;
@@ -2929,7 +2895,6 @@
           submitBtn.textContent = tab === 'create' ? 'Create Server' : 'Join Server';
         });
         
-        // Server modal submit
         document.getElementById('server-modal-submit')?.addEventListener('click', async () => {
           const activeTab = document.querySelector('#server-modal-tabs .tab.active')?.dataset.tab;
           
@@ -2942,7 +2907,6 @@
           }
         });
         
-        // Create channel
         document.getElementById('create-channel-submit')?.addEventListener('click', async () => {
           const name = document.getElementById('create-channel-name').value.trim();
           if (name && State.currentServer) {
@@ -2950,14 +2914,12 @@
           }
         });
         
-        // Copy invite code
         document.getElementById('copy-invite-code')?.addEventListener('click', () => {
           const code = document.getElementById('invite-code-display').textContent;
           navigator.clipboard.writeText(code);
           UI.showToast('Copied to clipboard');
         });
         
-        // Save profile
         document.getElementById('save-profile')?.addEventListener('click', async () => {
           const displayName = document.getElementById('edit-display-name').value.trim();
           const bio = document.getElementById('edit-bio').value.trim();
@@ -2968,7 +2930,6 @@
           this.render();
         });
         
-        // Save server settings
         document.getElementById('save-server-settings')?.addEventListener('click', async () => {
           const name = document.getElementById('edit-server-name').value.trim();
           if (name && State.currentServer) {
@@ -2977,7 +2938,6 @@
           }
         });
         
-        // Delete server
         document.getElementById('delete-server-btn')?.addEventListener('click', async () => {
           if (State.currentServer) {
             UI.closeModal('modal-server-settings');
@@ -2985,7 +2945,6 @@
           }
         });
         
-        // Save edit message
         document.getElementById('save-edit-message')?.addEventListener('click', async () => {
           const content = document.getElementById('edit-message-content').value.trim();
           if (content && Messages.editingMessage) {
@@ -2993,7 +2952,6 @@
           }
         });
         
-        // Close modals on overlay click
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
           overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
@@ -3002,7 +2960,6 @@
           });
         });
         
-        // Escape to close modals
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
             document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
@@ -3013,10 +2970,9 @@
       },
       
       bindViewEvents() {
-        const app = document.getElementById('app');
+        const appEl = document.getElementById('app');
         
-        // Server selection
-        app.addEventListener('click', async (e) => {
+        appEl.addEventListener('click', async (e) => {
           const serverEl = e.target.closest('[data-server]');
           if (serverEl) {
             const serverId = serverEl.dataset.server;
@@ -3039,14 +2995,12 @@
             }
           }
           
-          // Add server
           if (e.target.closest('#add-server')) {
             document.getElementById('create-server-name').value = '';
             document.getElementById('join-server-code').value = '';
             UI.openModal('modal-server');
           }
           
-          // Channel selection
           const channelEl = e.target.closest('[data-channel]');
           if (channelEl) {
             const channelId = channelEl.dataset.channel;
@@ -3059,7 +3013,6 @@
             }
           }
           
-          // DM selection
           const dmEl = e.target.closest('[data-dm]');
           if (dmEl) {
             const dmId = dmEl.dataset.dm;
@@ -3072,25 +3025,21 @@
             }
           }
           
-          // Add channel
           if (e.target.closest('#add-channel-btn')) {
             document.getElementById('create-channel-name').value = '';
             UI.openModal('modal-channel');
           }
           
-          // Invite
           if (e.target.closest('#invite-btn') && State.currentServer) {
             document.getElementById('invite-code-display').textContent = State.currentServer.inviteCode;
             UI.openModal('modal-invite');
           }
           
-          // Server settings
           if (e.target.closest('#server-settings-btn') && State.currentServer) {
             document.getElementById('edit-server-name').value = State.currentServer.name;
             UI.openModal('modal-server-settings');
           }
           
-          // User settings
           if (e.target.closest('#user-settings-btn')) {
             document.getElementById('edit-display-name').value = State.profile?.displayName || '';
             document.getElementById('edit-bio').value = State.profile?.bio || '';
@@ -3098,12 +3047,10 @@
             UI.openModal('modal-profile');
           }
           
-          // Logout
           if (e.target.closest('#logout-btn')) {
-            await Auth.signOut();
+            await Auth.logOut();
           }
           
-          // Message actions
           const actionBtn = e.target.closest('[data-action]');
           if (actionBtn) {
             const action = actionBtn.dataset.action;
@@ -3121,7 +3068,6 @@
             }
           }
           
-          // User profile card
           const userEl = e.target.closest('[data-user]');
           if (userEl && !e.target.closest('.message-actions')) {
             const userId = userEl.dataset.user;
@@ -3137,7 +3083,6 @@
               card.style.top = `${Math.min(rect.top, window.innerHeight - 250)}px`;
               card.classList.remove('hidden');
               
-              // DM button
               document.getElementById('profile-card-dm').onclick = async () => {
                 card.classList.add('hidden');
                 if (userId !== State.user.uid) {
@@ -3147,18 +3092,15 @@
             }
           }
           
-          // Attach image
           if (e.target.closest('#attach-image-btn')) {
             document.getElementById('image-file-input').click();
           }
           
-          // Remove image preview
           if (e.target.closest('#image-preview-remove')) {
             Messages.pendingImage = null;
             document.getElementById('image-preview').classList.remove('active');
           }
           
-          // Mobile navigation
           const navItem = e.target.closest('[data-nav]');
           if (navItem) {
             const nav = navItem.dataset.nav;
@@ -3178,7 +3120,6 @@
           }
         });
         
-        // Image file selection
         document.getElementById('image-file-input')?.addEventListener('change', async (e) => {
           const file = e.target.files[0];
           if (file) {
@@ -3189,7 +3130,6 @@
           }
         });
         
-        // Message input
         const messageInput = document.getElementById('message-input');
         messageInput?.addEventListener('keydown', async (e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
@@ -3206,7 +3146,6 @@
           }
         });
         
-        // Close profile card on outside click
         document.addEventListener('click', (e) => {
           const profileCard = document.getElementById('profile-card');
           if (profileCard && !profileCard.classList.contains('hidden')) {
@@ -3218,7 +3157,7 @@
       }
     };
 
-    // Initialize
+    // Initialize the app
     App.init();
   </script>
 </body>
