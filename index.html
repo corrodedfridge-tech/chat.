@@ -7,213 +7,238 @@
     <style>
         :root {
             --bg-body: #000000;
-            --bg-sidebar: #111111;
-            --bg-panel: #1a1a1a;
-            --bg-hover: #2a2a2a;
-            --border: #333;
+            --bg-sidebar: #1c1c1e;
+            --bg-panel: #2c2c2e;
+            --bg-hover: #3a3a3c;
+            --border: #2c2c2e;
             --text-main: #ffffff;
-            --text-muted: #888;
-            --accent: #fff;
-            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --text-muted: #8e8e93;
+            --accent: #ffffff; 
+            --danger: #ff453a;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; }
         body { background: var(--bg-body); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; font-size: 14px; }
         
+        /* Icons */
         .icon { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .hidden { display: none !important; }
         
-        .col-servers { width: 72px; background: #000; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; overflow-y: auto; z-index: 2; }
-        .col-sidebar { width: 240px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1; }
+        /* Columns */
+        .col-servers { width: 72px; background: #000; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 12px; overflow-y: auto; }
+        .col-sidebar { width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
         .col-chat { flex: 1; background: var(--bg-body); display: flex; flex-direction: column; position: relative; }
 
-        .srv-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--bg-panel); color: #fff; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; transition: 0.2s; overflow: hidden; }
-        .srv-btn:hover, .srv-btn.active { border-radius: 16px; border-color: var(--accent); background: #222; }
+        /* Server Buttons */
+        .srv-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--bg-panel); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; transition: 0.2s; overflow: hidden; position: relative; }
+        .srv-btn:hover, .srv-btn.active { border-radius: 16px; background: var(--accent); color: #000; }
         .srv-btn img { width: 100%; height: 100%; object-fit: cover; }
-        .srv-sep { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
-
-        .header { height: 48px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 700; letter-spacing: -0.5px; background: rgba(17,17,17,0.95); }
-        .list { flex: 1; overflow-y: auto; padding: 8px; }
         
-        .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 6px; cursor: pointer; color: var(--text-muted); margin-bottom: 2px; }
-        .nav-item:hover { background: var(--bg-hover); color: var(--text-main); }
+        /* Sidebar List */
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; cursor: pointer; color: var(--text-muted); margin: 2px 8px; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
         .nav-item.active { background: var(--bg-hover); color: var(--text-main); }
-        .nav-pfp { width: 32px; height: 32px; border-radius: 50%; background: #333; overflow: hidden; flex-shrink: 0; }
+        .nav-pfp { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-panel); overflow: hidden; flex-shrink: 0; }
         .nav-pfp img { width: 100%; height: 100%; object-fit: cover; }
 
-        .user-panel { height: 52px; background: #0a0a0a; border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 10px; gap: 8px; flex-shrink: 0; }
-        .up-avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; overflow: hidden; cursor: pointer; flex-shrink: 0; }
-        .up-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .up-info { flex: 1; min-width: 0; }
-        .up-name { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .up-tag { font-size: 11px; color: var(--text-muted); }
-        .icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
-        .icon-btn:hover { background: var(--bg-hover); color: #fff; }
-
-        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
-        .msg { display: flex; margin-top: 16px; position: relative; }
-        .msg:hover { background: rgba(255,255,255,0.02); }
-        .msg:hover .msg-tools { display: flex; }
-        .msg.stacked { margin-top: 2px; }
-        .msg-left { width: 56px; flex-shrink: 0; display: flex; justify-content: center; } 
-        .msg-pfp { width: 40px; height: 40px; border-radius: 50%; background: #333; overflow: hidden; cursor: pointer; }
+        /* Headers */
+        .header { height: 52px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 700; background: rgba(28, 28, 30, 0.9); backdrop-filter: blur(10px); }
+        
+        /* Chat Area */
+        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+        
+        /* Message Styling */
+        .msg { display: flex; gap: 12px; margin-top: 16px; padding: 4px 8px; border-radius: 8px; position: relative; }
+        .msg:hover { background: rgba(255,255,255,0.03); }
+        .msg:hover .msg-actions { display: flex; }
+        .msg.stacked { margin-top: 0; }
+        
+        .msg-pfp { width: 38px; height: 38px; border-radius: 50%; background: var(--bg-panel); flex-shrink: 0; overflow: hidden; cursor: pointer; }
         .msg-pfp img { width: 100%; height: 100%; object-fit: cover; }
-        .msg-right { flex: 1; min-width: 0; }
+        .msg.stacked .msg-pfp { width: 0; margin-right: 38px; opacity: 0; }
+        
+        .msg-content { flex: 1; min-width: 0; }
         .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
-        .msg-name { font-weight: 700; cursor: pointer; }
+        .msg.stacked .msg-meta { display: none; }
+        .msg-name { font-weight: 600; font-size: 14px; cursor: pointer; }
         .msg-name:hover { text-decoration: underline; }
         .msg-time { font-size: 11px; color: var(--text-muted); }
-        .msg-content { color: #dcddde; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
+        .msg-text { color: #ddd; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .msg-edited { font-size: 10px; color: var(--text-muted); margin-left: 4px; }
         .msg-img { max-width: 300px; max-height: 300px; border-radius: 8px; margin-top: 5px; cursor: pointer; }
-        .msg-tools { position: absolute; right: 16px; top: -10px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 2px; display: none; }
-        .tool-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; }
-        .tool-btn:hover { color: #fff; background: var(--bg-hover); }
 
+        /* Message Actions (Edit/Delete) */
+        .msg-actions { position: absolute; right: 10px; top: -10px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 2px; display: none; }
+        .msg-action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 2px; }
+        .msg-action-btn:hover { color: var(--text-main); background: var(--bg-hover); }
+        .msg-action-btn.del:hover { color: var(--danger); }
+
+        /* Inputs */
         .input-area { padding: 20px; }
-        .input-box { background: var(--bg-panel); border-radius: 8px; padding: 10px; display: flex; align-items: center; border: 1px solid var(--border); }
-        .input-field { flex: 1; background: none; border: none; color: #fff; font-size: 15px; resize: none; height: 24px; max-height: 140px; overflow-y: auto; }
+        .input-box { background: #1c1c1e; border-radius: 18px; padding: 8px 12px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
+        .input-field { flex: 1; background: none; border: none; color: var(--text-main); font-size: 15px; resize: none; height: 24px; max-height: 100px; }
+        .btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; }
+        .btn-icon:hover { color: var(--text-main); }
+
+        /* Status Dots */
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; margin-right: 5px; }
+        .status-dot.online { background: var(--success); }
         
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; }
-        .modal { background: #111; width: 400px; padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .modal h2 { margin-bottom: 20px; text-transform: uppercase; font-size: 16px; letter-spacing: 1px; text-align: center; }
-        .form-group { margin-bottom: 15px; }
-        .label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
-        .input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 4px; }
-        .btn { width: 100%; padding: 10px; background: #fff; color: #000; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; }
-        .btn:hover { opacity: 0.9; }
-        .btn-red { background: #ed4245; color: #fff; }
-        .hidden { display: none !important; }
+        /* Modals & Auth */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; }
+        .modal { background: #1c1c1e; width: 400px; padding: 30px; border-radius: 20px; border: 1px solid var(--border); }
+        .input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; margin-top: 5px; margin-bottom: 15px; }
+        .btn { width: 100%; padding: 12px; background: #fff; color: #000; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; }
+        .btn:hover { background: #ddd; }
+        .btn-danger { background: rgba(255, 69, 58, 0.2); color: var(--danger); }
         .loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .spinner { width: 24px; height: 24px; border: 3px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head><body>
-    <div class="loader" id="loader">Loading...</div>
+    <div class="loader" id="loader"><div class="spinner"></div></div>
 
-    <div class="overlay" id="authScreen" style="display:none">
+    <!-- AUTH SCREEN -->
+    <div class="modal-overlay" id="authScreen" style="display:none;background:#000;backdrop-filter:none">
         <div class="modal">
-            <h2>Welcome</h2>
-            <div class="form-group"><label class="label">Email</label><input id="email" class="input"></div>
-            <div class="form-group"><label class="label">Password</label><input type="password" id="password" class="input"></div>
-            <button class="btn" id="loginBtn">Log In</button>
-            <button class="btn" style="margin-top:10px;background:#222;color:#fff;border:1px solid #444" id="signupBtn">Sign Up</button>
-            <button class="btn" style="margin-top:10px;background:#4285f4;color:#fff" id="googleBtn">Google</button>
+            <h1 style="text-align:center;margin-bottom:30px">Chat.</h1>
+            <input id="email" class="input" placeholder="Email">
+            <input type="password" id="password" class="input" placeholder="Password">
+            <button class="btn" id="loginBtn">Sign In</button>
+            <button class="btn" style="margin-top:10px;background:#333;color:#fff" id="signupBtn">Create Account</button>
+            <button class="btn" style="margin-top:10px;background:#000;border:1px solid #333;color:#fff" id="googleBtn">Continue with Google</button>
         </div>
     </div>
 
+    <!-- MAIN APP -->
     <div class="app-container" id="appUI" style="display:none;width:100%;height:100%">
+        <!-- 1. SERVERS -->
         <div class="col-servers">
             <button class="srv-btn active" id="homeBtn" title="Direct Messages">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             </button>
-            <div class="srv-sep"></div>
-            <div id="serverList" style="display:flex;flex-direction:column;gap:10px;width:100%;align-items:center"></div>
-            <button class="srv-btn" id="addServerBtn" style="color:#2ecc71;border-color:#2ecc71">+</button>
+            <div style="width:32px;height:1px;background:var(--border);margin:4px 0"></div>
+            <div id="serverList" style="display:flex;flex-direction:column;gap:12px;width:100%;align-items:center"></div>
+            <button class="srv-btn" id="addServerBtn" style="color:var(--text-main)">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
         </div>
 
+        <!-- 2. SIDEBAR -->
         <div class="col-sidebar">
+            <!-- DM VIEW -->
             <div id="dmView" style="display:flex;flex-direction:column;height:100%">
                 <div class="header">
                     <span>Friends</span>
-                    <button class="icon-btn" id="addFriendBtn" title="Add Friend"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></button>
+                    <button class="btn-icon" id="addFriendBtn" title="Add Friend"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
                 </div>
-                <div class="list" id="friendList"></div>
+                <div class="list-content" id="friendList" style="flex:1;overflow-y:auto;padding:8px"></div>
             </div>
 
+            <!-- SERVER VIEW -->
             <div id="serverView" class="hidden" style="flex-direction:column;height:100%">
                 <div class="header">
                     <span id="serverNameDisp">Server</span>
-                    <button class="icon-btn" id="serverSettingsBtn" title="Server Settings"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+                    <button class="btn-icon hidden" id="serverSettingsBtn" title="Server Settings"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                 </div>
-                <div class="list">
+                <div style="flex:1;overflow-y:auto;padding:8px">
                     <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px;display:flex;justify-content:space-between">
                         TEXT CHANNELS
-                        <button class="icon-btn" id="addChannelBtn" style="padding:0">+</button>
+                        <button class="btn-icon hidden" style="width:16px;height:16px" id="addChannelBtn"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
                     </div>
                     <div id="channelList"></div>
                 </div>
             </div>
 
-            <div class="user-panel">
-                <div class="up-avatar" onclick="openModal('settingsModal')"><img id="myPfp"></div>
-                <div class="up-info">
-                    <div class="up-name" id="myName">User</div>
-                    <div class="up-tag" id="myTag">#0000</div>
+            <!-- USER PANEL -->
+            <div class="user-panel" style="padding:12px;background:rgba(0,0,0,0.2);display:flex;align-items:center;gap:10px;border-top:1px solid var(--border)">
+                <div class="nav-pfp" onclick="openModal('settingsModal')" style="cursor:pointer"><img id="myPfp"></div>
+                <div style="flex:1;min-width:0">
+                    <div style="font-weight:700;font-size:13px" id="myName">User</div>
+                    <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center"><div class="status-dot" id="myStatusDot"></div> <span id="myStatusText">Online</span></div>
                 </div>
-                <button class="icon-btn" onclick="openModal('settingsModal')">⚙️</button>
+                <button class="btn-icon" onclick="openModal('settingsModal')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
             </div>
         </div>
 
+        <!-- 3. CHAT -->
         <div class="col-chat">
             <div class="header">
                 <div style="display:flex;align-items:center;gap:10px">
                     <span style="color:var(--text-muted);font-size:20px">#</span>
-                    <span id="chatTitle">Friends</span>
+                    <span id="headerTitle">Friends</span>
                 </div>
             </div>
             <div class="messages" id="messageList"></div>
             <div class="input-area" id="inputArea" style="display:none">
                 <div class="input-box">
-                    <button class="icon-btn" id="uploadBtn">📷</button>
-                    <input type="file" id="fileInput" hidden accept="image/*">
+                    <button class="btn-icon" id="imgUploadBtn"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></button>
+                    <input type="file" id="imgInput" hidden accept="image/*">
                     <input class="input-field" id="msgInput" placeholder="Message...">
-                    <button class="icon-btn" id="sendBtn" style="color:#fff">➤</button>
+                    <button class="btn-icon" id="sendBtn" style="color:var(--text-main)"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="overlay" id="usernameModal">
+    <!-- MODALS -->
+    <div class="modal-overlay" id="usernameModal">
         <div class="modal">
-            <h2>Identify Yourself</h2>
-            <div class="form-group"><label class="label">Username</label><input id="pickUser" class="input" placeholder="unique_name"></div>
+            <h2>Identity</h2>
+            <p style="color:#666;font-size:12px;margin-bottom:10px">Choose a unique username.</p>
+            <input class="input" id="pickUser" placeholder="username">
             <button class="btn" id="saveUserBtn">Start</button>
         </div>
     </div>
 
-    <div class="overlay" id="friendModal">
+    <div class="modal-overlay" id="friendModal">
         <div class="modal">
             <h2>Add Friend</h2>
-            <div class="form-group"><label class="label">Username</label><input id="friendInput" class="input"></div>
+            <input class="input" id="friendInput" placeholder="Username">
             <button class="btn" id="submitFriend">Send Request</button>
-            <button class="btn btn-red" style="margin-top:10px;background:transparent" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-danger" style="margin-top:10px;background:none" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
-    <div class="overlay" id="serverModal">
+    <div class="modal-overlay" id="serverModal">
         <div class="modal">
-            <h2>Create Server</h2>
-            <div class="form-group"><label class="label">Name</label><input id="srvName" class="input"></div>
-            <div class="form-group"><button class="btn" style="background:#333;color:#fff" onclick="document.getElementById('srvIconIn').click()">Upload Icon</button><input type="file" id="srvIconIn" hidden></div>
-            <button class="btn" id="createSrvBtn">Create</button>
-            <div style="text-align:center;margin:15px 0;color:#555">OR</div>
-            <div class="form-group"><label class="label">Join Code</label><input id="joinCode" class="input"></div>
+            <h2>Add Server</h2>
+            <input class="input" id="newServerName" placeholder="Server Name">
+            <button class="btn" style="margin-top:10px;background:#333;color:#fff" onclick="document.getElementById('srvIconIn').click()">Upload Icon</button>
+            <input type="file" id="srvIconIn" hidden accept="image/*">
+            <button class="btn" id="createSrvBtn" style="margin-top:10px">Create New</button>
+            <div style="text-align:center;color:var(--text-muted);margin:15px 0">OR</div>
+            <input class="input" id="joinCode" placeholder="Invite Code">
             <button class="btn" id="joinSrvBtn">Join</button>
-            <button class="btn btn-red" style="margin-top:10px;background:transparent" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-danger" style="margin-top:10px;background:none" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
-    <div class="overlay" id="settingsModal">
+    <div class="modal-overlay" id="settingsModal">
         <div class="modal">
             <h2>Settings</h2>
-            <div style="display:flex;justify-content:center;margin-bottom:15px">
-                <div class="up-avatar" style="width:80px;height:80px;border:2px solid var(--border)"><img id="set_pfp"></div>
+            <div style="display:flex;justify-content:center;margin-bottom:20px">
+                <div class="nav-pfp" style="width:80px;height:80px;border:2px solid var(--border)"><img id="set_pfp"></div>
             </div>
-            <button class="btn" style="margin-bottom:15px" onclick="document.getElementById('pfpIn').click()">Change Avatar</button>
+            <button class="btn" style="margin-bottom:20px" onclick="document.getElementById('pfpIn').click()">Change Avatar</button>
             <input type="file" id="pfpIn" hidden>
-            <div class="form-group"><label class="label">Display Name</label><input id="set_disp" class="input"></div>
-            <div class="form-group"><label class="label">Bio</label><input id="set_bio" class="input"></div>
+            <label class="label">Display Name</label><input id="set_disp" class="input">
+            <label class="label">Bio</label><input id="set_bio" class="input">
             <button class="btn" id="saveSetBtn">Save</button>
-            <button class="btn btn-red" style="margin-top:10px" id="logoutBtn">Log Out</button>
-            <button class="btn btn-red" style="margin-top:10px;background:transparent" onclick="closeModal()">Close</button>
+            <button class="btn btn-danger" style="margin-top:10px" id="logoutBtn">Log Out</button>
+            <button class="btn btn-danger" style="margin-top:10px;background:transparent" onclick="closeModal()">Close</button>
         </div>
     </div>
 
-    <div class="overlay" id="serverSettingsModal">
+    <div class="modal-overlay" id="serverSettingsModal">
         <div class="modal">
             <h2>Server Settings</h2>
-            <div class="form-group"><label class="label">Name</label><input id="editSrvName" class="input"></div>
-            <div class="form-group"><label class="label">Invite Code</label><input id="viewInvite" class="input" readonly></div>
-            <button class="btn" id="saveSrvSetBtn">Update</button>
-            <button class="btn btn-red" style="margin-top:10px" id="delSrvBtn">Delete Server</button>
-            <button class="btn btn-red" style="margin-top:10px;background:transparent" onclick="closeModal()">Close</button>
+            <label class="label">Name</label><input id="editSrvName" class="input">
+            <label class="label">Invite Code</label><input id="viewInvite" class="input" readonly>
+            <button class="btn" id="saveSrvSetBtn" style="margin-top:10px">Update</button>
+            <button class="btn btn-danger" style="margin-top:10px" id="delSrvBtn">Delete Server</button>
+            <button class="btn btn-danger" style="margin-top:10px;background:transparent" onclick="closeModal()">Close</button>
         </div>
     </div>    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -242,7 +267,12 @@
         auth.onAuthStateChanged(async user => {
             if(user) {
                 currentUser = user;
-                const doc = await db.collection('users').doc(user.uid).get();
+                const userRef = db.collection('users').doc(user.uid);
+                await userRef.update({ status: 'Online' });
+                window.addEventListener('beforeunload', () => userRef.update({ status: 'Offline' }));
+                document.addEventListener('visibilitychange', () => userRef.update({ status: document.hidden ? 'Idle' : 'Online' }));
+
+                const doc = await userRef.get();
                 if(!doc.exists || !doc.data().username) {
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('authScreen').style.display = 'none';
@@ -289,13 +319,16 @@
             document.getElementById('myName').innerText = userData.displayName;
             document.getElementById('myTag').innerText = '@' + userData.username;
             document.getElementById('myPfp').src = userData.photoURL || 'https://via.placeholder.com/40';
+            document.getElementById('myStatusText').innerText = userData.status || 'Online';
+            document.getElementById('myStatusDot').className = `status-dot ${userData.status === 'Online' ? 'online' : ''}`;
+            
             document.getElementById('set_disp').value = userData.displayName;
             document.getElementById('set_bio').value = userData.bio || '';
             document.getElementById('set_pfp').src = userData.photoURL || 'https://via.placeholder.com/40';
         }
 
         function openModal(id) { document.getElementById(id).style.display='flex'; }
-        function closeModal() { document.querySelectorAll('.overlay').forEach(e=>e.style.display='none'); }
+        function closeModal() { document.querySelectorAll('.modal-overlay').forEach(e=>e.style.display='none'); }
 
         function switchTab(type, id) {
             if(msgUnsub) msgUnsub();
@@ -350,20 +383,24 @@
             db.collection('servers').doc(sid).get().then(doc => {
                 const s = doc.data();
                 document.getElementById('serverNameDisp').innerText = s.name;
+                
+                // Owner Logic
+                const isOwner = s.owner === currentUser.uid;
                 const setBtn = document.getElementById('serverSettingsBtn');
                 const addChBtn = document.getElementById('addChannelBtn');
                 
-                if(s.owner === currentUser.uid) {
-                    setBtn.style.display = 'flex';
-                    addChBtn.style.display = 'flex';
+                if(isOwner) {
+                    setBtn.classList.remove('hidden');
+                    addChBtn.classList.remove('hidden');
+                    
                     setBtn.onclick = () => {
                         document.getElementById('editServerName').value = s.name;
                         document.getElementById('viewInvite').value = s.inviteCode;
                         openModal('serverSettingsModal');
-                    }
+                    };
                 } else {
-                    setBtn.style.display = 'none';
-                    addChBtn.style.display = 'none';
+                    setBtn.classList.add('hidden');
+                    addChBtn.classList.add('hidden');
                 }
             });
 
@@ -419,10 +456,8 @@
             const f = (await db.collection('users').doc(fid).get()).data();
             document.getElementById('chatTitle').innerText = `@ ${f.username}`;
             const dmId = [currentUser.uid, fid].sort().join('_');
-            const ref = db.collection('dms').doc(dmId);
-            const exists = (await ref.get()).exists;
-            if(!exists) await ref.set({members:[currentUser.uid, fid]},{merge:true});
-            listenChat(ref.collection('messages'));
+            await db.collection('dms').doc(dmId).set({members:[currentUser.uid, fid]},{merge:true});
+            listenChat(db.collection('dms').doc(dmId).collection('messages'));
         }
 
         function listenChat(ref) {
@@ -444,8 +479,8 @@
                     let tools = '';
                     if(m.uid === currentUser.uid) {
                         tools = `<div class="msg-tools">
-                            ${m.type === 'text' ? `<button class="tool-btn" onclick="editMsg('${mid}','${m.text.replace(/'/g,"\\'")}')">✎</button>` : ''}
-                            <button class="tool-btn" onclick="delMsg('${mid}')">🗑</button>
+                            ${m.type === 'text' ? `<button class="msg-action-btn" onclick="editMsg('${mid}','${m.text.replace(/'/g,"\\'")}')"><svg class="icon icon-s" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>` : ''}
+                            <button class="msg-action-btn del" onclick="delMsg('${mid}')"><svg class="icon icon-s" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
                         </div>`;
                     }
 
@@ -454,8 +489,8 @@
                     } else {
                         const date = m.createdAt ? m.createdAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
                         el.innerHTML = `
-                            <div class="msg-left"><div class="msg-pfp"><img src="${m.pfp||''}"></div></div>
-                            <div class="msg-right">
+                            <div class="msg-pfp"><img src="${m.pfp||''}"></div>
+                            <div class="msg-content">
                                 <div class="msg-meta"><span class="msg-name">${m.user}</span><span class="msg-time">${date}</span></div>
                                 ${content}
                             </div>${tools}`;
@@ -570,6 +605,9 @@
                 switchTab('dm',null);
             }
         }
+
+        function openModal(id) { document.getElementById('modalOverlay').style.display = 'flex'; document.querySelectorAll('.modal').forEach(e => e.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
     </script>
 </body>
 </html>
