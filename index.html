@@ -223,11 +223,11 @@
         let currentUser = null;
         let userData = null;
         let currentContext = 'dm'; 
-        let currentId = null;
+        let currentId = null; // friendUid OR serverId
         let currentChannelId = null; 
         let unsubListener = null;
 
-        // AUTH
+        // --- AUTH ---
         auth.onAuthStateChanged(user => {
             if(user) {
                 currentUser = user;
@@ -265,7 +265,214 @@
             document.getElementById('loadingScreen').style.display = 'none';
         }
 
-        // IMAGE COMPRESSOR (The Magic "Free Storage" Trick)
+        // --- NAVIGATION ---
+        function switchContext(ctx, id) {
+            currentContext = ctx;
+            currentId = id;
+            document.getElementById('inputArea').style.display = 'block';
+            
+            if(ctx === 'dm') {
+                // DM Mode
+                document.getElementById('dmSidebar').classList.remove('hidden');
+                document.getElementById('serverSidebar').classList.add('hidden');
+                document.getElementById('homeBtn').classList.add('active');
+                document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+                
+                if(id) {
+                    openDM(id);
+                } else {
+                    document.getElementById('messagesList').innerHTML = '<div style="text-align:center;color:#555;margin-top:20px">Select a friend to chat</div>';
+                    document.getElementById('chatTitle').innerText = "Friends";
+                    document.getElementById('inputArea').style.display = 'none';
+                }
+            } else {
+                // Server Mode
+                document.getElementById('dmSidebar').classList.add('hidden');
+                document.getElementById('serverSidebar').classList.remove('hidden');
+                document.getElementById('homeBtn').classList.remove('active');
+                document.querySelectorAll('.server-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.id === id);
+                });
+                loadChannels(id);
+            }
+        }
+
+        // --- DM LOGIC (THE FIX) ---
+        async function openDM(friendUid) {
+            // 1. Get friend details
+            const fDoc = await db.collection('users').doc(friendUid).get();
+            const f = fDoc.data();
+            document.getElementById('chatTitle').innerText = `@${f.username}`;
+            
+            // 2. Determine DM ID (Sorted UIDs ensures both users look at the same doc)
+            const dmId = [currentUser.uid, friendUid].sort().join('_');
+            
+            // 3. Force update the DM doc. 
+            // Using set with merge:true is safe. It creates if missing, updates if exists.
+            // This ensures "members" exists so Security Rules allow the read.
+            await db.collection('dms').doc(dmId).set({
+                members: [currentUser.uid, friendUid],
+                lastActive: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            // 4. Listen
+            listenMessages(db.collection('dms').doc(dmId).collection('messages'));
+        }
+
+        // --- SERVERS ---
+        function loadServers() {
+            db.collection('servers').where('members', 'array-contains', currentUser.uid)
+            .onSnapshot(snap => {
+                const list = document.getElementById('serverList');
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const s = doc.data();
+                    const btn = document.createElement('button');
+                    btn.className = 'server-btn';
+                    btn.dataset.id = doc.id;
+                    if(s.icon) btn.innerHTML = `<img src="${s.icon}">`;
+                    else btn.innerText = s.name.substring(0,2).toUpperCase();
+                    
+                    btn.onclick = () => {
+                        document.getElementById('serverNameDisplay').innerText = s.name;
+                        switchContext('server', doc.id);
+                    };
+                    list.appendChild(btn);
+                });
+            });
+        }
+
+        function loadChannels(serverId) {
+            db.collection('servers').doc(serverId).collection('channels').orderBy('createdAt')
+            .onSnapshot(snap => {
+                const list = document.getElementById('channelList');
+                list.innerHTML = '';
+                let first = null;
+                snap.forEach(doc => {
+                    if(!first) first = doc;
+                    const c = doc.data();
+                    const el = document.createElement('div');
+                    el.className = 'nav-item';
+                    el.innerText = `# ${c.name}`;
+                    el.onclick = () => {
+                        currentChannelId = doc.id;
+                        document.getElementById('chatTitle').innerText = `# ${c.name}`;
+                        // Visual Active State
+                        document.querySelectorAll('#channelList .nav-item').forEach(x => x.classList.remove('active'));
+                        el.classList.add('active');
+                        listenMessages(db.collection('servers').doc(serverId).collection('channels').doc(doc.id).collection('messages'));
+                    };
+                    list.appendChild(el);
+                });
+                if(first && !currentChannelId) {
+                    currentChannelId = first.id;
+                    document.getElementById('chatTitle').innerText = `# ${first.data().name}`;
+                    listenMessages(db.collection('servers').doc(serverId).collection('channels').doc(first.id).collection('messages'));
+                }
+            });
+        }
+
+        // --- MESSAGES ---
+        function listenMessages(ref) {
+            if(unsubListener) unsubListener();
+            document.getElementById('messagesList').innerHTML = ''; // Clear old
+            
+            unsubListener = ref.orderBy('createdAt', 'asc').limitToLast(50)
+            .onSnapshot(snap => {
+                const list = document.getElementById('messagesList');
+                list.innerHTML = '';
+                let prevAuth = null;
+                
+                snap.forEach(doc => {
+                    const m = doc.data();
+                    const stacked = prevAuth === m.authorId;
+                    const el = document.createElement('div');
+                    el.className = `message ${stacked ? 'stacked' : ''}`;
+                    
+                    let body = m.type === 'image' ? 
+                        `<img src="${m.content}" class="msg-image" onclick="window.open(this.src)">` : 
+                        `<div class="msg-text">${m.content}</div>`;
+                    
+                    if(stacked) {
+                        el.innerHTML = `<div style="width:40px;margin-right:16px"></div><div class="msg-info">${body}</div>`;
+                    } else {
+                        const date = m.createdAt ? m.createdAt.toDate().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : 'Sending...';
+                        el.innerHTML = `
+                            <div class="msg-pfp"><img src="${m.authorPfp || 'https://via.placeholder.com/40'}"></div>
+                            <div class="msg-info">
+                                <div class="msg-header">
+                                    <span class="msg-name">${m.authorName}</span>
+                                    <span class="msg-date">${date}</span>
+                                </div>
+                                ${body}
+                            </div>
+                        `;
+                    }
+                    list.appendChild(el);
+                    prevAuth = m.authorId;
+                });
+                list.scrollTop = list.scrollHeight;
+            });
+        }
+
+        async function sendMessage(content, type='text') {
+            if(!content) return;
+            const msg = {
+                content, type,
+                authorId: currentUser.uid,
+                authorName: userData.displayName,
+                authorPfp: userData.photoURL || '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                if(currentContext === 'dm') {
+                    if(!currentId) return alert("Select a friend first!");
+                    const dmId = [currentUser.uid, currentId].sort().join('_');
+                    await db.collection('dms').doc(dmId).collection('messages').add(msg);
+                } else {
+                    if(!currentId || !currentChannelId) return;
+                    await db.collection('servers').doc(currentId).collection('channels').doc(currentChannelId).collection('messages').add(msg);
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Error sending: " + e.message);
+            }
+        }
+
+        // --- FRIENDS LIST ---
+        function loadFriends() {
+            db.collection('users').doc(currentUser.uid).onSnapshot(async doc => {
+                userData = doc.data(); 
+                updateUI();
+                const list = document.getElementById('friendsList');
+                list.innerHTML = '';
+                
+                if(userData.friends && userData.friends.length > 0) {
+                    for(const fid of userData.friends) {
+                        const fDoc = await db.collection('users').doc(fid).get();
+                        if(fDoc.exists) {
+                            const f = fDoc.data();
+                            const el = document.createElement('div');
+                            el.className = 'nav-item';
+                            el.innerHTML = `
+                                <div class="nav-avatar"><img src="${f.photoURL||'https://via.placeholder.com/32'}"></div>
+                                <div style="overflow:hidden">
+                                    <div style="font-weight:700;font-size:14px">${f.displayName}</div>
+                                    <div style="font-size:11px;color:#666">@${f.username}</div>
+                                </div>
+                            `;
+                            el.onclick = () => switchContext('dm', fid);
+                            list.appendChild(el);
+                        }
+                    }
+                } else {
+                    list.innerHTML = '<div style="padding:12px;color:var(--gray-500);font-size:13px">Add friends to chat!</div>';
+                }
+            });
+        }
+
+        // --- IMAGE COMPRESSION (Free Storage) ---
         function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -275,20 +482,75 @@
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        // Resize max dimension to 600px to keep string small
-                        const scale = 600 / Math.max(img.width, img.height);
+                        const scale = 500 / Math.max(img.width, img.height); // Scale down to 500px max
                         canvas.width = img.width * Math.min(1, scale);
                         canvas.height = img.height * Math.min(1, scale);
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        // Convert to lightweight JPEG string
                         resolve(canvas.toDataURL('image/jpeg', 0.6)); 
                     }
                 }
             });
         }
 
-        // TABS & AUTH LOGIC
+        // --- INPUTS & BUTTONS ---
+        const msgInput = document.getElementById('msgInput');
+        msgInput.onkeydown = (e) => {
+            if(e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(msgInput.value.trim());
+                msgInput.value = '';
+            }
+        };
+        document.getElementById('sendBtn').onclick = () => {
+            const val = msgInput.value.trim();
+            if(val) { sendMessage(val); msgInput.value = ''; }
+        };
+
+        // Upload Button Logic
+        document.getElementById('uploadBtn').onclick = () => document.getElementById('fileInput').click();
+        document.getElementById('fileInput').onchange = async (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const base64 = await compressImage(file);
+                sendMessage(base64, 'image');
+            }
+        };
+
+        // Profile PFP Upload
+        document.getElementById('pfpInput').onchange = async (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const base64 = await compressImage(file);
+                document.getElementById('settingsPfpPreview').src = base64;
+            }
+        };
+
+        // --- MODALS & UI ---
+        function updateUI() {
+            document.getElementById('myDisplayName').innerText = userData.displayName;
+            document.getElementById('myUsername').innerText = '@' + userData.username;
+            document.getElementById('myAvatarImg').src = userData.photoURL || 'https://via.placeholder.com/32';
+            document.getElementById('editDisplay').value = userData.displayName;
+            document.getElementById('editBio').value = userData.bio;
+            document.getElementById('settingsPfpPreview').src = userData.photoURL;
+        }
+        function showModal(id) {
+            document.getElementById('modalOverlay').style.display = 'flex';
+            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+        document.querySelectorAll('.modal-close').forEach(b => b.onclick = closeModal);
+
+        document.getElementById('addFriendBtn').onclick = () => showModal('friendModal');
+        document.getElementById('addServerBtn').onclick = () => showModal('serverModal');
+        document.getElementById('settingsBtn').onclick = () => showModal('settingsModal');
+        document.getElementById('myAvatarBtn').onclick = () => showModal('settingsModal');
+        document.getElementById('addChannelBtn').onclick = () => showModal('addChannelModal');
+        document.getElementById('homeBtn').onclick = () => switchContext('dm', null);
+
+        // --- ACTIONS ---
         document.getElementById('tabLogin').onclick = () => {
             document.getElementById('loginForm').classList.remove('hidden');
             document.getElementById('signupForm').classList.add('hidden');
@@ -319,221 +581,6 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
             } catch(err) { alert(err.message); }
-        };
-        document.getElementById('googleBtn').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-        document.getElementById('logoutBtn').onclick = () => auth.signOut();        // NAVIGATION
-        function switchContext(ctx, id) {
-            currentContext = ctx;
-            currentId = id;
-            document.getElementById('inputArea').style.display = 'block';
-            
-            if(ctx === 'dm') {
-                document.getElementById('dmSidebar').classList.remove('hidden');
-                document.getElementById('serverSidebar').classList.add('hidden');
-                document.getElementById('homeBtn').classList.add('active');
-                document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-                
-                if(id) openDM(id);
-                else {
-                    document.getElementById('messagesList').innerHTML = '<div style="text-align:center;color:#555;margin-top:20px">Select a friend</div>';
-                    document.getElementById('chatTitle').innerText = "Friends";
-                    document.getElementById('inputArea').style.display = 'none';
-                }
-            } else {
-                document.getElementById('dmSidebar').classList.add('hidden');
-                document.getElementById('serverSidebar').classList.remove('hidden');
-                document.getElementById('homeBtn').classList.remove('active');
-                document.querySelectorAll('.server-btn').forEach(b => {
-                    b.classList.toggle('active', b.dataset.id === id);
-                });
-                loadChannels(id);
-            }
-        }
-
-        document.getElementById('homeBtn').onclick = () => switchContext('dm', null);
-
-        // FRIENDS
-        function loadFriends() {
-            db.collection('users').doc(currentUser.uid).onSnapshot(async doc => {
-                userData = doc.data(); 
-                updateUI();
-                const list = document.getElementById('friendsList');
-                list.innerHTML = '';
-                if(userData.friends) {
-                    for(const fid of userData.friends) {
-                        const fDoc = await db.collection('users').doc(fid).get();
-                        const f = fDoc.data();
-                        const el = document.createElement('div');
-                        el.className = 'nav-item';
-                        el.innerHTML = `<div class="nav-avatar"><img src="${f.photoURL||'https://via.placeholder.com/32'}"></div>
-                            <div><div style="font-weight:700;font-size:14px">${f.displayName}</div><div style="font-size:11px;color:#666">@${f.username}</div></div>`;
-                        el.onclick = () => switchContext('dm', fid);
-                        list.appendChild(el);
-                    }
-                }
-            });
-        }
-
-        async function openDM(friendUid) {
-            const fDoc = await db.collection('users').doc(friendUid).get();
-            const f = fDoc.data();
-            document.getElementById('chatTitle').innerText = `@${f.username}`;
-            const dmId = [currentUser.uid, friendUid].sort().join('_');
-            const exists = (await db.collection('dms').doc(dmId).get()).exists;
-            if(!exists) await db.collection('dms').doc(dmId).set({ members: [currentUser.uid, friendUid] });
-            listenMessages(db.collection('dms').doc(dmId).collection('messages'));
-        }
-
-        // SERVERS
-        function loadServers() {
-            db.collection('servers').where('members', 'array-contains', currentUser.uid)
-            .onSnapshot(snap => {
-                const list = document.getElementById('serverList');
-                list.innerHTML = '';
-                snap.forEach(doc => {
-                    const s = doc.data();
-                    const btn = document.createElement('button');
-                    btn.className = 'server-btn';
-                    btn.dataset.id = doc.id;
-                    if(s.icon) btn.innerHTML = `<img src="${s.icon}">`;
-                    else btn.innerText = s.name.substring(0,2).toUpperCase();
-                    btn.onclick = () => {
-                        document.getElementById('serverNameDisplay').innerText = s.name;
-                        switchContext('server', doc.id);
-                    };
-                    list.appendChild(btn);
-                });
-            });
-        }
-
-        function loadChannels(serverId) {
-            db.collection('servers').doc(serverId).collection('channels').orderBy('createdAt')
-            .onSnapshot(snap => {
-                const list = document.getElementById('channelList');
-                list.innerHTML = '';
-                let first = null;
-                snap.forEach(doc => {
-                    if(!first) first = doc;
-                    const c = doc.data();
-                    const el = document.createElement('div');
-                    el.className = 'nav-item';
-                    el.innerText = `# ${c.name}`;
-                    el.onclick = () => {
-                        currentChannelId = doc.id;
-                        document.getElementById('chatTitle').innerText = `# ${c.name}`;
-                        listenMessages(db.collection('servers').doc(serverId).collection('channels').doc(doc.id).collection('messages'));
-                    };
-                    list.appendChild(el);
-                });
-                if(first && !currentChannelId) {
-                    currentChannelId = first.id;
-                    document.getElementById('chatTitle').innerText = `# ${first.data().name}`;
-                    listenMessages(db.collection('servers').doc(serverId).collection('channels').doc(first.id).collection('messages'));
-                }
-            });
-        }
-
-        // MESSAGING
-        function listenMessages(ref) {
-            if(unsubListener) unsubListener();
-            document.getElementById('messagesList').innerHTML = '';
-            unsubListener = ref.orderBy('createdAt', 'asc').limitToLast(50)
-            .onSnapshot(snap => {
-                const list = document.getElementById('messagesList');
-                list.innerHTML = '';
-                let prevAuth = null;
-                snap.forEach(doc => {
-                    const m = doc.data();
-                    const stacked = prevAuth === m.authorId;
-                    const el = document.createElement('div');
-                    el.className = `message ${stacked ? 'stacked' : ''}`;
-                    let body = m.type === 'image' ? `<img src="${m.content}" class="msg-image" onclick="window.open(this.src)">` : `<div class="msg-text">${m.content}</div>`;
-                    if(stacked) el.innerHTML = `<div style="width:40px;margin-right:16px"></div><div class="msg-info">${body}</div>`;
-                    else {
-                        const date = m.createdAt ? m.createdAt.toDate().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '...';
-                        el.innerHTML = `<div class="msg-pfp"><img src="${m.authorPfp||'https://via.placeholder.com/40'}"></div><div class="msg-info"><div class="msg-header"><span class="msg-name">${m.authorName}</span><span class="msg-date">${date}</span></div>${body}</div>`;
-                    }
-                    list.appendChild(el);
-                    prevAuth = m.authorId;
-                });
-                list.scrollTop = list.scrollHeight;
-            });
-        }
-
-        async function sendMessage(content, type='text') {
-            if(!content) return;
-            const msg = {
-                content, type,
-                authorId: currentUser.uid,
-                authorName: userData.displayName,
-                authorPfp: userData.photoURL || '',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            if(currentContext === 'dm') {
-                const dmId = [currentUser.uid, currentId].sort().join('_');
-                await db.collection('dms').doc(dmId).collection('messages').add(msg);
-            } else {
-                await db.collection('servers').doc(currentId).collection('channels').doc(currentChannelId).collection('messages').add(msg);
-            }
-        }        // INPUTS
-        const msgInput = document.getElementById('msgInput');
-        msgInput.onkeydown = (e) => {
-            if(e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(msgInput.value.trim());
-                msgInput.value = '';
-            }
-        };
-        document.getElementById('sendBtn').onclick = () => {
-            const val = msgInput.value.trim();
-            if(val) { sendMessage(val); msgInput.value = ''; }
-        };
-
-        // IMAGE UPLOAD (Chat)
-        document.getElementById('uploadBtn').onclick = () => document.getElementById('fileInput').click();
-        document.getElementById('fileInput').onchange = async (e) => {
-            const file = e.target.files[0];
-            if(file) {
-                const base64 = await compressImage(file);
-                sendMessage(base64, 'image');
-            }
-        };
-
-        // PROFILE PFP UPLOAD (Settings)
-        document.getElementById('pfpInput').onchange = async (e) => {
-            const file = e.target.files[0];
-            if(file) {
-                const base64 = await compressImage(file);
-                document.getElementById('settingsPfpPreview').src = base64; // Preview
-            }
-        };
-
-        // MODAL HELPERS
-        function updateUI() {
-            document.getElementById('myDisplayName').innerText = userData.displayName;
-            document.getElementById('myUsername').innerText = '@' + userData.username;
-            document.getElementById('myAvatarImg').src = userData.photoURL || 'https://via.placeholder.com/32';
-            document.getElementById('editDisplay').value = userData.displayName;
-            document.getElementById('editBio').value = userData.bio;
-            document.getElementById('settingsPfpPreview').src = userData.photoURL;
-        }
-        function showModal(id) {
-            document.getElementById('modalOverlay').style.display = 'flex';
-            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
-        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-        document.querySelectorAll('.modal-close').forEach(b => b.onclick = closeModal);
-
-        // BUTTONS
-        document.getElementById('addFriendBtn').onclick = () => showModal('friendModal');
-        document.getElementById('addServerBtn').onclick = () => showModal('serverModal');
-        document.getElementById('settingsBtn').onclick = () => showModal('settingsModal');
-        document.getElementById('myAvatarBtn').onclick = () => showModal('settingsModal');
-        
-        document.getElementById('addChannelBtn').onclick = () => {
-            const name = prompt("Channel Name:");
-            if(name && currentId) db.collection('servers').doc(currentId).collection('channels').add({name, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
         };
 
         document.getElementById('submitFriend').onclick = async () => {
@@ -566,6 +613,16 @@
             closeModal();
         };
 
+        document.getElementById('submitCreateChannel').onclick = async () => {
+            const name = document.getElementById('newChannelName').value;
+            if(name && currentId && currentContext === 'server') {
+                await db.collection('servers').doc(currentId).collection('channels').add({
+                    name, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                closeModal();
+            }
+        };
+
         document.getElementById('saveProfileBtn').onclick = async () => {
             const newPfp = document.getElementById('settingsPfpPreview').src;
             await db.collection('users').doc(currentUser.uid).update({
@@ -576,19 +633,10 @@
             closeModal();
         };
 
-        document.getElementById('serverNameDisplay').onclick = async () => {
-            if(currentContext === 'server') {
-                const s = await db.collection('servers').doc(currentId).get();
-                alert("Invite Code: " + s.data().inviteCode);
-            }
-        };
-
-        document.getElementById('leaveServerBtn').onclick = async () => {
-            if(currentContext === 'server' && confirm("Leave server?")) {
-                await db.collection('servers').doc(currentId).update({members: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)});
-                switchContext('dm', null);
-            }
-        };
+        document.getElementById('logoutBtn').onclick = () => auth.signOut();
+        document.getElementById('googleBtn').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
     </script>
+</body>
+</html>
 </body>
 </html>
