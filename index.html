@@ -4,309 +4,330 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier Prime', monospace; }
-        
         :root {
-            --bg: #000000;
-            --panel: #0a0a0a;
-            --border: #333333;
-            --text: #ffffff;
-            --dim: #666666;
-            --accent: #ffffff;
+            --bg-body: #000000;
+            --bg-sidebar: #1c1c1e;
+            --bg-panel: #2c2c2e;
+            --bg-active: #3a3a3c;
+            --bg-input: #1c1c1e;
+            --border: #2c2c2e;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --accent: #ffffff; 
+            --danger: #ff453a;
+            --success: #30d158;
+            --radius-l: 18px;
+            --radius-m: 12px;
+            --radius-s: 8px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); -webkit-font-smoothing: antialiased; }
         
-        /* Utility */
-        .hidden { display: none !important; }
-        button { cursor: pointer; }
-        input, textarea { outline: none; }
+        body { background: var(--bg-body); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; font-size: 14px; }
         
-        /* Layouts */
-        .app { display: none; width: 100%; height: 100%; }
-        .app.active { display: flex; }
+        /* Icons */
+        .icon { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .icon-s { width: 16px; height: 16px; }
         
-        /* 1. Server Column */
+        /* Layout Columns */
         .col-servers {
-            width: 70px;
-            background: var(--bg);
+            width: 72px;
+            background: #000000;
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px 0;
-            gap: 10px;
+            padding: 16px 0;
+            gap: 12px;
             overflow-y: auto;
+            z-index: 10;
         }
-        
-        .srv-btn {
-            width: 50px; height: 50px;
-            background: #111;
-            border: 1px solid var(--border);
-            color: var(--dim);
-            font-weight: bold;
-            font-size: 18px;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-            transition: 0.1s;
-        }
-        .srv-btn:hover, .srv-btn.active {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: #222;
-        }
-        .srv-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 2. Sidebar Column */
         .col-sidebar {
-            width: 250px;
-            background: var(--bg);
+            width: 260px;
+            background: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
         }
-        
+
+        .col-chat {
+            flex: 1;
+            background: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Server Buttons */
+        .srv-btn {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: var(--bg-panel);
+            color: var(--text-main);
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .srv-btn:hover, .srv-btn.active { border-radius: 16px; background: var(--accent); color: #000; }
+        .srv-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .srv-sep { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
+
+        /* Headers */
         .header {
-            height: 50px;
-            border-bottom: 1px solid var(--border);
+            height: 52px;
+            padding: 0 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: rgba(28, 28, 30, 0.8);
+            backdrop-filter: blur(20px);
         }
-        
-        .list { flex: 1; overflow-y: auto; padding: 10px; }
-        
-        .item {
-            padding: 10px;
-            border: 1px solid transparent;
-            margin-bottom: 5px;
-            color: var(--dim);
-            cursor: pointer;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .item:hover, .item.active {
-            border-color: var(--border);
-            color: var(--text);
-            background: #111;
-        }
-        .item-pfp { width: 30px; height: 30px; background: #222; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border); }
-        .item-pfp img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* Lists */
+        .list-content { flex: 1; overflow-y: auto; padding: 12px; }
+        
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px;
+            border-radius: var(--radius-m);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s;
+            margin-bottom: 2px;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        .nav-item.active { background: var(--bg-active); color: var(--text-main); }
+        
+        .nav-pfp { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-panel); overflow: hidden; flex-shrink: 0; }
+        .nav-pfp img { width: 100%; height: 100%; object-fit: cover; }
+        
         /* User Panel */
         .user-panel {
-            height: 60px;
-            border-top: 1px solid var(--border);
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .user-avatar { width: 35px; height: 35px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-info { flex: 1; overflow: hidden; }
-        .user-name { font-size: 14px; font-weight: bold; }
-        .user-tag { font-size: 11px; color: var(--dim); }
-        
-        .icon-btn { background: none; border: none; color: var(--dim); font-size: 18px; padding: 5px; }
-        .icon-btn:hover { color: var(--text); }
-
-        /* 3. Chat Column */
-        .col-chat {
-            flex: 1;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-        
-        .messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; }
-        
-        .msg { display: flex; gap: 15px; margin-bottom: 15px; }
-        .msg-img { width: 40px; height: 40px; border: 1px solid var(--border); flex-shrink: 0; overflow: hidden; }
-        .msg-img img { width: 100%; height: 100%; object-fit: cover; }
-        .msg-meta { margin-bottom: 4px; font-size: 12px; }
-        .msg-user { font-weight: bold; margin-right: 8px; cursor: pointer; }
-        .msg-user:hover { text-decoration: underline; }
-        .msg-time { color: var(--dim); }
-        .msg-content { line-height: 1.5; color: #ddd; word-break: break-word; }
-        .msg-attachment { max-width: 300px; max-height: 300px; border: 1px solid var(--border); margin-top: 5px; cursor: pointer; }
-
-        /* Input Area */
-        .input-area { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
-        .input-field {
-            flex: 1;
-            background: #000;
-            border: 1px solid var(--border);
-            color: var(--text);
             padding: 12px;
-            font-size: 14px;
+            background: rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 10px;
         }
-        .input-field:focus { border-color: var(--text); }
-        .btn {
-            background: var(--text);
-            color: var(--bg);
-            border: none;
-            padding: 0 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 12px;
-        }
-        .btn:hover { opacity: 0.8; }
-        .btn-upload { background: #111; color: var(--text); border: 1px solid var(--border); width: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .up-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-panel); overflow: hidden; cursor: pointer; }
+        .up-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .up-info { flex: 1; overflow: hidden; }
+        .up-name { font-weight: 600; font-size: 13px; }
+        .up-status { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+        .status-dot.online { background: var(--success); }
+        
+        /* Chat Area */
+        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        
+        .msg { display: flex; gap: 12px; margin-top: 16px; padding: 4px 8px; border-radius: var(--radius-m); }
+        .msg:hover { background: rgba(255,255,255,0.03); }
+        .msg.stacked { margin-top: 0; }
+        
+        .msg-pfp { width: 38px; height: 38px; border-radius: 50%; background: var(--bg-panel); flex-shrink: 0; overflow: hidden; cursor: pointer; }
+        .msg-pfp img { width: 100%; height: 100%; object-fit: cover; }
+        .msg.stacked .msg-pfp { width: 0; opacity: 0; margin-right: 38px; } /* Hide avatar but keep spacing */
+        
+        .msg-content { flex: 1; min-width: 0; }
+        .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+        .msg.stacked .msg-meta { display: none; }
+        .msg-name { font-weight: 600; font-size: 14px; cursor: pointer; }
+        .msg-name:hover { text-decoration: underline; }
+        .msg-time { font-size: 11px; color: var(--text-muted); }
+        .msg-text { color: #ddd; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .msg-img { max-width: 350px; max-height: 350px; border-radius: 12px; margin-top: 6px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 
-        /* Auth Screen */
-        .auth-screen { position: fixed; inset: 0; background: #000; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 5000; }
-        .auth-box { border: 1px solid var(--border); padding: 40px; width: 350px; text-align: center; }
-        .auth-input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; margin-bottom: 10px; }
-        .auth-btn { width: 100%; background: #fff; color: #000; border: none; padding: 10px; font-weight: bold; margin-top: 10px; }
+        /* Inputs */
+        .input-area { padding: 20px; }
+        .input-box {
+            background: var(--bg-input);
+            border-radius: var(--radius-l);
+            padding: 8px 12px;
+            display: flex; align-items: center; gap: 10px;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+        }
+        .input-box:focus-within { border-color: var(--text-muted); }
         
-        /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 6000; display: none; align-items: center; justify-content: center; }
-        .modal { background: #000; border: 1px solid #fff; padding: 30px; width: 400px; max-width: 90%; }
-        .modal h2 { margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .label { display: block; color: var(--dim); font-size: 12px; margin-bottom: 5px; margin-top: 15px; }
+        .btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 50%; transition: 0.2s; }
+        .btn-icon:hover { color: var(--text-main); background: rgba(255,255,255,0.1); }
         
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #333; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        .input-field {
+            flex: 1; background: none; border: none; color: var(--text-main); font-size: 15px; outline: none; resize: none; height: 24px; max-height: 100px;
+        }
+
+        /* Modals & Auth */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 5000; display: none; align-items: center; justify-content: center; }
+        .modal { background: #1c1c1e; width: 400px; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .modal h2 { font-size: 20px; margin-bottom: 20px; text-align: center; }
+        
+        .form-group { margin-bottom: 16px; }
+        .label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+        .input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; }
+        .input:focus { border-color: #fff; }
+        
+        .btn { width: 100%; padding: 12px; background: #fff; color: #000; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #e5e5e5; }
+        .btn-danger { background: rgba(255, 69, 58, 0.15); color: var(--danger); }
+        .btn-danger:hover { background: rgba(255, 69, 58, 0.3); }
+
+        .hidden { display: none !important; }
+        
+        /* Loading */
+        .loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .spinner { width: 24px; height: 24px; border: 3px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head><body>
-    <div class="auth-screen" id="authUI">
-        <div class="auth-box">
-            <h1 style="margin-bottom:20px;letter-spacing:-2px">CHAT.</h1>
-            <input id="email" class="auth-input" placeholder="EMAIL">
-            <input type="password" id="password" class="auth-input" placeholder="PASSWORD">
-            <button class="auth-btn" id="loginBtn">LOG IN</button>
-            <button class="auth-btn" style="background:#000;color:#fff;border:1px solid #fff" id="signupBtn">SIGN UP</button>
-            <button class="auth-btn" style="margin-top:20px;background:#333;color:#fff" id="googleBtn">GOOGLE</button>
+    <div class="loader" id="loadingScreen"><div class="spinner"></div></div>
+
+    <!-- AUTH SCREEN -->
+    <div class="modal-overlay" id="authScreen" style="display:none;background:#000;backdrop-filter:none">
+        <div class="modal">
+            <h1 style="text-align:center;margin-bottom:30px;font-size:28px">Chat.</h1>
+            <div class="form-group"><input id="email" class="input" placeholder="Email"></div>
+            <div class="form-group"><input type="password" id="password" class="input" placeholder="Password"></div>
+            <button class="btn" id="loginBtn">Sign In</button>
+            <button class="btn" style="margin-top:10px;background:#333;color:#fff" id="signupBtn">Create Account</button>
+            <button class="btn" style="margin-top:10px;background:#000;border:1px solid #333;color:#fff" id="googleBtn">Continue with Google</button>
         </div>
     </div>
 
-    <div class="app" id="appUI">
+    <!-- MAIN APP -->
+    <div class="app-container" id="appUI" style="display:none;width:100%;height:100%">
         <!-- 1. SERVERS -->
         <div class="col-servers">
-            <button class="srv-btn active" id="homeBtn">DM</button>
-            <div style="width:30px;height:1px;background:#333"></div>
-            <div id="serverList" style="display:flex;flex-direction:column;gap:10px;width:100%;align-items:center"></div>
-            <button class="srv-btn" id="addServerBtn" style="color:#0f0">+</button>
+            <button class="srv-btn active" id="homeBtn" title="Direct Messages">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </button>
+            <div class="srv-sep"></div>
+            <div id="serverList" style="display:flex;flex-direction:column;gap:12px;width:100%;align-items:center"></div>
+            <button class="srv-btn" id="addServerBtn" style="color:var(--success)">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
         </div>
 
         <!-- 2. SIDEBAR -->
         <div class="col-sidebar">
-            <!-- Friend List View -->
-            <div id="dmSidebar">
+            <!-- DM VIEW -->
+            <div id="dmView" style="display:flex;flex-direction:column;height:100%">
                 <div class="header">
                     <span>Friends</span>
-                    <button class="icon-btn" id="addFriendBtn">+</button>
+                    <button class="btn-icon" id="addFriendBtn"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
                 </div>
-                <div class="list" id="friendList"></div>
+                <div class="list-content" id="friendList"></div>
             </div>
 
-            <!-- Server View -->
-            <div id="serverSidebar" class="hidden">
+            <!-- SERVER VIEW -->
+            <div id="serverView" style="display:none;flex-direction:column;height:100%">
                 <div class="header">
-                    <span id="serverNameDisp">SERVER</span>
-                    <button class="icon-btn hidden" id="serverSettingsBtn" title="Owner Settings">⚙️</button>
+                    <span id="serverNameDisp">Server</span>
+                    <button class="btn-icon" id="serverSettingsBtn"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                 </div>
-                <div class="list">
-                    <div style="font-size:10px;color:#444;margin-bottom:10px">TEXT CHANNELS</div>
+                <div class="list-content">
+                    <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px;display:flex;justify-content:space-between">
+                        TEXT CHANNELS
+                        <button class="btn-icon" style="width:16px;height:16px" id="addChannelBtn">+</button>
+                    </div>
                     <div id="channelList"></div>
-                    <button id="createChannelBtn" style="width:100%;padding:5px;background:none;border:1px dashed #333;color:#444;margin-top:10px">+ CHANNEL</button>
                 </div>
             </div>
 
-            <!-- User Panel -->
+            <!-- USER PANEL -->
             <div class="user-panel">
-                <div class="user-avatar"><img id="myPfp" src=""></div>
-                <div class="user-info">
-                    <div class="user-name" id="myName">User</div>
-                    <div class="user-tag" id="myStatus">Online</div>
+                <div class="up-avatar" onclick="openModal('settingsModal')"><img id="myPfp"></div>
+                <div class="up-info">
+                    <div class="up-name" id="myName">User</div>
+                    <div class="up-status"><div class="status-dot" id="myStatusDot"></div> <span id="myStatusText">Online</span></div>
                 </div>
-                <button class="icon-btn" id="settingsBtn">⚙️</button>
+                <button class="btn-icon" onclick="openModal('settingsModal')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
             </div>
         </div>
 
-        <!-- 3. CHAT -->
+        <!-- 3. CHAT AREA -->
         <div class="col-chat">
             <div class="header">
-                <span id="chatTitle">...</span>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span style="color:var(--text-muted);font-size:20px">#</span>
+                    <span id="headerTitle">Friends</span>
+                </div>
             </div>
-            <div class="messages" id="messageArea"></div>
-            <div class="input-area" id="inputArea">
-                <button class="btn-upload" id="uploadBtn">📷</button>
-                <input type="file" id="fileInput" hidden accept="image/*">
-                <input class="input-field" id="msgInput" placeholder="TYPE A MESSAGE...">
-                <button class="btn" id="sendBtn">SEND</button>
+            <div class="messages" id="messageList">
+                <div style="text-align:center;color:var(--text-muted);margin-top:40px">Select a conversation</div>
             </div>
+            <div class="input-area" id="inputArea" style="display:none">
+                <div class="input-box">
+                    <button class="btn-icon" id="imgUploadBtn"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></button>
+                    <input type="file" id="imgInput" hidden accept="image/*">
+                    <textarea class="input-field" id="msgInput" placeholder="Message..." rows="1"></textarea>
+                    <button class="btn-icon" id="sendBtn" style="color:var(--accent)"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+                </div>
+            </div>
+        </div>
+    </div>    <!-- MODALS -->
+    <div class="modal-overlay" id="usernameModal">
+        <div class="modal">
+            <h2>Create Identity</h2>
+            <div class="form-group"><label class="label">Username</label><input id="pickUser" class="input" placeholder="unique_name"></div>
+            <button class="btn" id="saveUserBtn">Get Started</button>
         </div>
     </div>
 
-    <!-- MODALS -->
-    <div class="modal-overlay" id="modalOverlay">
-        
-        <!-- Username Picker -->
-        <div class="modal hidden" id="usernameModal">
-            <h2>Identity</h2>
-            <p style="color:#666;font-size:12px;margin-bottom:10px">You need a unique username.</p>
-            <input class="auth-input" id="pickUser" placeholder="username">
-            <button class="auth-btn" id="saveUserBtn">START</button>
+    <div class="modal-overlay" id="friendModal">
+        <div class="modal">
+            <h2>Add Friend</h2>
+            <div class="form-group"><label class="label">Username</label><input id="friendInput" class="input" placeholder="username"></div>
+            <button class="btn" id="submitFriend">Send Request</button>
+            <button class="btn btn-danger" style="margin-top:10px" onclick="closeModal()">Cancel</button>
         </div>
+    </div>
 
-        <!-- User Settings -->
-        <div class="modal hidden" id="settingsModal">
-            <h2>USER SETTINGS</h2>
-            
-            <div style="display:flex;gap:15px;align-items:center;margin-bottom:20px">
-                <div style="width:80px;height:80px;border:1px solid #fff;overflow:hidden"><img id="set_pfp" style="width:100%;height:100%;object-fit:cover"></div>
-                <button class="btn" style="height:30px" onclick="document.getElementById('set_pfp_input').click()">UPLOAD</button>
-                <input type="file" id="set_pfp_input" hidden>
+    <div class="modal-overlay" id="serverModal">
+        <div class="modal">
+            <h2>Add Server</h2>
+            <div class="form-group"><label class="label">Server Name</label><input id="newServerName" class="input"></div>
+            <div class="form-group"><label class="label">Server Icon</label><button class="btn" style="background:#333;color:#fff" onclick="document.getElementById('serverIconInput').click()">Upload Icon</button><input type="file" id="serverIconInput" hidden></div>
+            <button class="btn" id="createServerBtn">Create New</button>
+            <div style="text-align:center;color:var(--text-muted);margin:15px 0">OR</div>
+            <div class="form-group"><label class="label">Invite Code</label><input id="joinCode" class="input"></div>
+            <button class="btn" id="joinServerBtn">Join Existing</button>
+            <button class="btn btn-danger" style="margin-top:10px" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <h2>User Settings</h2>
+            <div style="display:flex;justify-content:center;margin-bottom:20px">
+                <div class="up-avatar" style="width:80px;height:80px;border:2px solid var(--border)"><img id="set_pfp"></div>
             </div>
-
-            <span class="label">DISPLAY NAME</span>
-            <input class="auth-input" id="set_disp">
+            <button class="btn" style="margin-bottom:20px" onclick="document.getElementById('pfpInput').click()">Change Avatar</button>
+            <input type="file" id="pfpInput" hidden>
             
-            <span class="label">BIO</span>
-            <input class="auth-input" id="set_bio">
-
-            <span class="label">STATUS</span>
-            <select class="auth-input" id="set_status">
-                <option value="Online">Online</option>
-                <option value="Busy">Busy</option>
-                <option value="Offline">Offline</option>
-            </select>
-
-            <button class="auth-btn" id="saveSettingsBtn">SAVE CHANGES</button>
-            <button class="auth-btn" style="background:#f00;border-color:#f00;color:#fff;margin-top:10px" id="logoutBtn">LOG OUT</button>
-            <button class="icon-btn" style="position:absolute;top:10px;right:10px" onclick="closeModal()">✕</button>
+            <div class="form-group"><label class="label">Display Name</label><input id="set_disp" class="input"></div>
+            <div class="form-group"><label class="label">Bio</label><input id="set_bio" class="input"></div>
+            <button class="btn" id="saveSettingsBtn">Save Changes</button>
+            <button class="btn btn-danger" style="margin-top:10px" id="logoutBtn">Log Out</button>
+            <button class="btn btn-danger" style="margin-top:10px;background:none" onclick="closeModal()">Cancel</button>
         </div>
+    </div>
 
-        <!-- Server Owner Settings -->
-        <div class="modal hidden" id="serverSettingsModal">
-            <h2>SERVER SETTINGS</h2>
-            <span class="label">SERVER NAME</span>
-            <input class="auth-input" id="editServerName">
-            <button class="auth-btn" id="saveServerBtn">RENAME</button>
-            
-            <div style="margin-top:30px;border-top:1px solid #333;padding-top:10px">
-                <span class="label" style="color:#f00">DANGER ZONE</span>
-                <button class="auth-btn" style="background:#f00;border:none;color:#fff" id="deleteServerBtn">DELETE SERVER</button>
-            </div>
-            <button class="icon-btn" style="position:absolute;top:10px;right:10px" onclick="closeModal()">✕</button>
-        </div>
-
-        <!-- Generic Input Modal (Friend/Server) -->
-        <div class="modal hidden" id="inputModal">
-            <h2 id="modalTitle">TITLE</h2>
-            <input class="auth-input" id="modalInput">
-            <button class="auth-btn" id="modalAction">GO</button>
-            <button class="icon-btn" style="position:absolute;top:10px;right:10px" onclick="closeModal()">✕</button>
+    <div class="modal-overlay" id="serverSettingsModal">
+        <div class="modal">
+            <h2>Server Settings</h2>
+            <div class="form-group"><label class="label">Name</label><input id="editServerName" class="input"></div>
+            <div class="form-group"><label class="label">Invite Code</label><input id="viewInviteCode" class="input" readonly></div>
+            <button class="btn" id="saveServerSettingsBtn">Update</button>
+            <button class="btn btn-danger" style="margin-top:10px" id="deleteServerBtn">Delete Server</button>
+            <button class="btn btn-danger" style="margin-top:10px;background:none" onclick="closeModal()">Close</button>
         </div>
     </div>    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -327,32 +348,47 @@
 
         let currentUser = null;
         let userData = null;
-        let activeTab = 'dm';
-        let activeId = null; // serverId or friendUid
-        let activeChannel = null;
+        let ctx = 'dm'; 
+        let currentId = null;
+        let currentChannel = null;
         let msgUnsub = null;
 
-        // AUTH
+        // AUTH & PRESENCE
         auth.onAuthStateChanged(async user => {
             if(user) {
                 currentUser = user;
-                const doc = await db.collection('users').doc(user.uid).get();
+                // Presence
+                const userRef = db.collection('users').doc(user.uid);
+                await userRef.update({ status: 'Online' });
+                window.addEventListener('beforeunload', () => userRef.update({ status: 'Offline' }));
+                document.addEventListener('visibilitychange', () => userRef.update({ status: document.hidden ? 'Idle' : 'Online' }));
+
+                const doc = await userRef.get();
                 if(!doc.exists || !doc.data().username) {
-                    document.getElementById('authUI').style.display = 'none';
+                    document.getElementById('authScreen').style.display = 'none';
                     openModal('usernameModal');
                 } else {
                     userData = doc.data();
                     initApp();
                 }
             } else {
-                document.getElementById('authUI').style.display = 'flex';
-                document.getElementById('appUI').classList.remove('active');
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appUI').style.display = 'none';
             }
             document.getElementById('loadingScreen').style.display = 'none';
         });
 
-        // IMAGE COMPRESSION (For Free Storage)
-        const toBase64 = file => new Promise(resolve => {
+        function initApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appUI').style.display = 'flex';
+            updateUserUI();
+            loadServers();
+            loadFriends();
+            switchTab('dm', null);
+        }
+
+        // IMAGE COMPRESSION (Data URL)
+        const compress = (file, size=400) => new Promise(resolve => {
             const r = new FileReader();
             r.readAsDataURL(file);
             r.onload = e => {
@@ -360,104 +396,86 @@
                 img.src = e.target.result;
                 img.onload = () => {
                     const cvs = document.createElement('canvas');
-                    const scale = 400 / Math.max(img.width, img.height);
-                    cvs.width = img.width * Math.min(1, scale);
-                    cvs.height = img.height * Math.min(1, scale);
+                    const sc = size / Math.max(img.width, img.height);
+                    cvs.width = img.width * Math.min(1, sc);
+                    cvs.height = img.height * Math.min(1, sc);
                     cvs.getContext('2d').drawImage(img,0,0,cvs.width,cvs.height);
-                    resolve(cvs.toDataURL('image/jpeg', 0.6));
+                    resolve(cvs.toDataURL('image/jpeg', 0.7));
                 }
             }
         });
 
-        // INIT UI
-        function initApp() {
-            document.getElementById('authUI').style.display = 'none';
-            document.getElementById('appUI').classList.add('active');
-            updateUserUI();
-            loadServers();
-            loadFriends();
-            switchTab('dm', null);
-        }
-
-        function updateUserUI() {
-            document.getElementById('myName').innerText = userData.displayName;
-            document.getElementById('myStatus').innerText = userData.status || 'Online';
-            document.getElementById('myPfp').src = userData.photoURL || '';
-            // Settings inputs
-            document.getElementById('set_disp').value = userData.displayName;
-            document.getElementById('set_bio').value = userData.bio || '';
-            document.getElementById('set_status').value = userData.status || 'Online';
-            document.getElementById('set_pfp').src = userData.photoURL || '';
-        }        // NAVIGATION
-        function switchTab(tab, id) {
+        // NAVIGATION LOGIC
+        function switchTab(type, id) {
+            // Unsubscribe previous chat
             if(msgUnsub) msgUnsub();
-            document.getElementById('messageArea').innerHTML = '';
+            document.getElementById('messageList').innerHTML = '';
             
-            activeTab = tab;
-            activeId = id;
-            activeChannel = null;
+            ctx = type;
+            currentId = id;
+            currentChannel = null;
 
-            if(tab === 'dm') {
-                document.getElementById('dmSidebar').classList.remove('hidden');
-                document.getElementById('serverSidebar').classList.add('hidden');
+            if(type === 'dm') {
+                document.getElementById('dmView').style.display = 'flex';
+                document.getElementById('serverView').style.display = 'none';
                 document.getElementById('homeBtn').classList.add('active');
                 document.querySelectorAll('.srv-btn').forEach(b => b.classList.remove('active'));
                 
-                if(id) openDM(id);
-                else {
-                    document.getElementById('chatTitle').innerText = "FRIENDS";
-                    document.getElementById('inputArea').classList.add('hidden');
+                if(id) {
+                    openDM(id);
+                } else {
+                    document.getElementById('headerTitle').innerText = "Friends";
+                    document.getElementById('inputArea').style.display = 'none';
                 }
             } else {
-                document.getElementById('dmSidebar').classList.add('hidden');
-                document.getElementById('serverSidebar').classList.remove('hidden');
+                document.getElementById('dmView').style.display = 'none';
+                document.getElementById('serverView').style.display = 'flex';
                 document.getElementById('homeBtn').classList.remove('active');
                 document.querySelectorAll('.srv-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
                 loadServer(id);
             }
-        }
-
-        // --- FRIENDS & DM ---
+        }        // FRIENDS & DM
         function loadFriends() {
             db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
                 userData = doc.data();
-                updateUserUI(); // Update my own UI too
+                updateUserUI(); 
                 const list = document.getElementById('friendList');
                 list.innerHTML = '';
                 if(userData.friends) {
                     userData.friends.forEach(async fid => {
                         const f = (await db.collection('users').doc(fid).get()).data();
-                        const div = document.createElement('div');
-                        div.className = 'item';
-                        div.innerHTML = `<div class="item-pfp"><img src="${f.photoURL}"></div><div>${f.displayName}</div>`;
-                        div.onclick = () => switchTab('dm', fid);
-                        list.appendChild(div);
+                        const el = document.createElement('div');
+                        el.className = 'nav-item';
+                        el.innerHTML = `<div class="nav-pfp"><img src="${f.photoURL}"></div><div>${f.displayName}</div>`;
+                        el.onclick = () => switchTab('dm', fid);
+                        list.appendChild(el);
                     });
                 }
             });
         }
 
         async function openDM(fid) {
-            document.getElementById('inputArea').classList.remove('hidden');
+            document.getElementById('inputArea').style.display = 'block';
             const f = (await db.collection('users').doc(fid).get()).data();
-            document.getElementById('chatTitle').innerText = `@ ${f.username}`;
+            document.getElementById('headerTitle').innerText = `@ ${f.username}`;
             const dmId = [currentUser.uid, fid].sort().join('_');
-            await db.collection('dms').doc(dmId).set({members:[currentUser.uid,fid]},{merge:true});
+            await db.collection('dms').doc(dmId).set({members:[currentUser.uid, fid]},{merge:true});
             listenChat(db.collection('dms').doc(dmId).collection('messages'));
         }
 
-        // --- SERVERS ---
+        // SERVERS
         function loadServers() {
             db.collection('servers').where('members','array-contains',currentUser.uid).onSnapshot(snap => {
                 const list = document.getElementById('serverList');
                 list.innerHTML = '';
-                snap.forEach(doc => {
-                    const s = doc.data();
+                snap.forEach(d => {
+                    const s = d.data();
                     const btn = document.createElement('div');
                     btn.className = 'srv-btn';
-                    btn.dataset.id = doc.id;
-                    btn.innerText = s.name.substring(0,2).toUpperCase();
-                    btn.onclick = () => switchTab('server', doc.id);
+                    btn.dataset.id = d.id;
+                    if(s.icon) btn.innerHTML = `<img src="${s.icon}">`;
+                    else btn.innerText = s.name.substring(0,2).toUpperCase();
+                    btn.onclick = () => switchTab('server', d.id);
                     list.appendChild(btn);
                 });
             });
@@ -467,18 +485,15 @@
             db.collection('servers').doc(sid).get().then(doc => {
                 const s = doc.data();
                 document.getElementById('serverNameDisp').innerText = s.name;
-                
-                // Owner settings
-                const settingsBtn = document.getElementById('serverSettingsBtn');
+                const setBtn = document.getElementById('serverSettingsBtn');
                 if(s.owner === currentUser.uid) {
-                    settingsBtn.classList.remove('hidden');
-                    settingsBtn.onclick = () => {
+                    setBtn.style.display = 'flex';
+                    setBtn.onclick = () => {
                         document.getElementById('editServerName').value = s.name;
+                        document.getElementById('viewInviteCode').value = s.inviteCode;
                         openModal('serverSettingsModal');
-                    }
-                } else {
-                    settingsBtn.classList.add('hidden');
-                }
+                    };
+                } else setBtn.style.display = 'none';
             });
 
             db.collection('servers').doc(sid).collection('channels').orderBy('createdAt').onSnapshot(snap => {
@@ -488,190 +503,185 @@
                 snap.forEach(d => {
                     if(!first) first = d;
                     const el = document.createElement('div');
-                    el.className = 'item';
+                    el.className = 'nav-item';
                     el.innerText = '# ' + d.data().name;
                     el.onclick = () => {
-                        document.querySelectorAll('#channelList .item').forEach(x=>x.classList.remove('active'));
+                        document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
                         el.classList.add('active');
-                        activeChannel = d.id;
-                        document.getElementById('chatTitle').innerText = '# ' + d.data().name;
-                        document.getElementById('inputArea').classList.remove('hidden');
+                        currentChannel = d.id;
+                        document.getElementById('headerTitle').innerText = '# ' + d.data().name;
+                        document.getElementById('inputArea').style.display = 'block';
                         listenChat(db.collection('servers').doc(sid).collection('channels').doc(d.id).collection('messages'));
-                    }
+                    };
                     list.appendChild(el);
                 });
-                if(first && !activeChannel) {
-                    // Auto select first channel
-                    activeChannel = first.id;
-                    document.getElementById('chatTitle').innerText = '# ' + first.data().name;
-                    document.getElementById('inputArea').classList.remove('hidden');
+                if(first && !currentChannel) {
+                    currentChannel = first.id;
+                    document.getElementById('headerTitle').innerText = '# ' + first.data().name;
+                    document.getElementById('inputArea').style.display = 'block';
                     listenChat(db.collection('servers').doc(sid).collection('channels').doc(first.id).collection('messages'));
                 }
             });
         }
 
-        // --- MESSAGING ---
+        // CHAT
         function listenChat(ref) {
-            const area = document.getElementById('messageArea');
-            area.innerHTML = '';
+            const list = document.getElementById('messageList');
+            if(msgUnsub) msgUnsub();
+            
             msgUnsub = ref.orderBy('createdAt','asc').limitToLast(50).onSnapshot(snap => {
-                area.innerHTML = '';
+                list.innerHTML = '';
+                let prev = null;
                 snap.forEach(doc => {
                     const m = doc.data();
-                    const el = document.createElement('div');
-                    el.className = 'msg';
+                    const stacked = prev === m.uid;
+                    const div = document.createElement('div');
+                    div.className = `msg ${stacked ? 'stacked' : ''}`;
                     
-                    let content = m.type === 'img' ? `<img src="${m.text}" class="msg-attachment" onclick="window.open(this.src)">` : `<div class="msg-content">${m.text}</div>`;
+                    let content = m.type === 'img' ? `<img src="${m.content}" class="msg-img" onclick="window.open(this.src)">` : `<div class="msg-text">${m.content}</div>`;
                     
-                    // Simple date
-                    const time = m.createdAt ? m.createdAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
-
-                    el.innerHTML = `
-                        <div class="msg-img"><img src="${m.pfp}"></div>
-                        <div style="flex:1">
-                            <div class="msg-meta">
-                                <span class="msg-user">${m.user}</span>
-                                <span class="msg-time">${time}</span>
-                            </div>
-                            ${content}
-                        </div>
-                    `;
-                    area.appendChild(el);
+                    if(stacked) {
+                        div.innerHTML = `<div class="msg-pfp"></div><div class="msg-content">${content}</div>`;
+                    } else {
+                        const date = m.createdAt ? m.createdAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+                        div.innerHTML = `<div class="msg-pfp"><img src="${m.pfp}"></div><div class="msg-content"><div class="msg-meta"><span class="msg-name">${m.user}</span><span class="msg-time">${date}</span></div>${content}</div>`;
+                    }
+                    list.appendChild(div);
+                    prev = m.uid;
                 });
-                area.scrollTop = area.scrollHeight;
+                list.scrollTop = list.scrollHeight;
             });
         }
 
-        async function send(text, type='text') {
-            if(!text) return;
-            const payload = {
-                text, type,
-                uid: currentUser.uid,
-                user: userData.displayName,
-                pfp: userData.photoURL,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            if(activeTab === 'dm') {
-                const dmId = [currentUser.uid, activeId].sort().join('_');
-                await db.collection('dms').doc(dmId).collection('messages').add(payload);
-            } else {
-                await db.collection('servers').doc(activeId).collection('channels').doc(activeChannel).collection('messages').add(payload);
-            }
-        }        // EVENTS
+        async function send(content, type='text') {
+            if(!content) return;
+            const msg = { content, type, uid: currentUser.uid, user: userData.displayName, pfp: userData.photoURL, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+            if(ctx === 'dm') await db.collection('dms').doc([currentUser.uid, currentId].sort().join('_')).collection('messages').add(msg);
+            else await db.collection('servers').doc(currentId).collection('channels').doc(currentChannel).collection('messages').add(msg);
+        }
+
+        // EVENTS
         const inp = document.getElementById('msgInput');
-        inp.onkeydown = e => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inp.value.trim()); inp.value=''; } };
+        inp.onkeydown = e => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inp.value.trim()); inp.value=''; }};
         document.getElementById('sendBtn').onclick = () => { send(inp.value.trim()); inp.value=''; };
         
-        document.getElementById('uploadBtn').onclick = () => document.getElementById('fileInput').click();
-        document.getElementById('fileInput').onchange = async e => {
-            if(e.target.files[0]) send(await toBase64(e.target.files[0]), 'img');
+        document.getElementById('imgUploadBtn').onclick = () => document.getElementById('imgInput').click();
+        document.getElementById('imgInput').onchange = async e => {
+            if(e.target.files[0]) send(await compress(e.target.files[0]), 'img');
         };
 
-        // SETTINGS & PROFILE
-        document.getElementById('settingsBtn').onclick = () => openModal('settingsModal');
-        document.getElementById('set_pfp_input').onchange = async e => {
+        // Server Creation
+        let serverIconData = null;
+        document.getElementById('serverIconInput').onchange = async e => { if(e.target.files[0]) serverIconData = await compress(e.target.files[0]); };
+        
+        document.getElementById('createServerBtn').onclick = async () => {
+            const name = document.getElementById('newServerName').value;
+            if(name) {
+                const ref = await db.collection('servers').add({
+                    name, owner: currentUser.uid, members: [currentUser.uid], icon: serverIconData || '',
+                    inviteCode: Math.random().toString(36).substr(2,6)
+                });
+                await ref.collection('channels').add({name:'general', createdAt: firebase.firestore.FieldValue.serverTimestamp()});
+                closeModal();
+            }
+        };
+
+        // Settings Actions
+        document.getElementById('pfpInput').onchange = async e => {
             if(e.target.files[0]) {
-                const b64 = await toBase64(e.target.files[0]);
+                const b64 = await compress(e.target.files[0]);
                 document.getElementById('set_pfp').src = b64;
-                document.getElementById('myPfp').src = b64; // INSTANT UPDATE
+                document.getElementById('myPfp').src = b64; // Instant Update
             }
         };
         
         document.getElementById('saveSettingsBtn').onclick = async () => {
-            const newPfp = document.getElementById('set_pfp').src;
-            const newDisp = document.getElementById('set_disp').value;
-            // Immediate local UI update
-            document.getElementById('myName').innerText = newDisp;
-            document.getElementById('myStatus').innerText = document.getElementById('set_status').value;
-            
             await db.collection('users').doc(currentUser.uid).update({
-                displayName: newDisp,
+                displayName: document.getElementById('set_disp').value,
                 bio: document.getElementById('set_bio').value,
                 status: document.getElementById('set_status').value,
-                photoURL: newPfp
+                photoURL: document.getElementById('set_pfp').src
             });
+            updateUserUI();
             closeModal();
         };
 
-        document.getElementById('saveUserBtn').onclick = async () => {
-            const u = document.getElementById('pickUser').value.trim();
-            if(!u) return;
-            const check = await db.collection('users').where('username','==',u).get();
-            if(!check.empty) return alert('Taken');
-            await db.collection('users').doc(currentUser.uid).set({
-                uid: currentUser.uid, email: currentUser.email,
-                username: u, displayName: u, photoURL: '',
-                friends: [], createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            window.location.reload();
-        };
-
-        // MODAL HANDLERS (Generic)
-        let modalCallback = null;
-        function showInputModal(title, cb) {
-            document.getElementById('modalTitle').innerText = title;
-            modalCallback = cb;
-            openModal('inputModal');
-        }
-        document.getElementById('modalAction').onclick = () => {
-            if(modalCallback) modalCallback(document.getElementById('modalInput').value);
-            document.getElementById('modalInput').value = '';
-            closeModal();
-        };
-
-        document.getElementById('addFriendBtn').onclick = () => showInputModal("ADD FRIEND (USERNAME)", async (val) => {
-            const snap = await db.collection('users').where('username','==',val.trim()).get();
-            if(snap.empty) return alert('Not found');
-            const fid = snap.docs[0].id;
-            await db.collection('users').doc(currentUser.uid).update({friends: firebase.firestore.FieldValue.arrayUnion(fid)});
-            await db.collection('users').doc(fid).update({friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)});
-        });
-
-        document.getElementById('addServerBtn').onclick = () => showInputModal("SERVER NAME", async (val) => {
-            const ref = await db.collection('servers').add({
-                name: val, owner: currentUser.uid, members: [currentUser.uid],
-                inviteCode: Math.random().toString(36).substr(2,6)
-            });
-            await ref.collection('channels').add({name:'general', createdAt: firebase.firestore.FieldValue.serverTimestamp()});
-        });
-
-        document.getElementById('createChannelBtn').onclick = () => showInputModal("CHANNEL NAME", async (val) => {
-            await db.collection('servers').doc(activeId).collection('channels').add({name: val, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
-        });
-
-        // OWNER SETTINGS
-        document.getElementById('saveServerBtn').onclick = async () => {
-            await db.collection('servers').doc(activeId).update({ name: document.getElementById('editServerName').value });
+        // Server Settings
+        document.getElementById('saveServerSettingsBtn').onclick = async () => {
+            await db.collection('servers').doc(currentId).update({ name: document.getElementById('editServerName').value });
             document.getElementById('serverNameDisp').innerText = document.getElementById('editServerName').value;
             closeModal();
         };
+        
         document.getElementById('deleteServerBtn').onclick = async () => {
-            if(confirm("Delete this server permanently?")) {
-                await db.collection('servers').doc(activeId).delete();
+            if(confirm("Delete server permanently?")) {
+                await db.collection('servers').doc(currentId).delete();
                 switchTab('dm', null);
                 closeModal();
             }
         };
 
-        // AUTH ACTIONS
-        document.getElementById('loginBtn').onclick = async () => {
-            try { await auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value); }
-            catch(e){ alert(e.message); }
-        };
-        document.getElementById('signupBtn').onclick = async () => {
-            try { await auth.createUserWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value); }
-            catch(e){ alert(e.message); }
-        };
-        document.getElementById('googleBtn').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-        document.getElementById('logoutBtn').onclick = () => auth.signOut();
-
-        // UTILS
-        function openModal(id) {
-            document.getElementById('modalOverlay').style.display = 'flex';
-            document.querySelectorAll('.modal').forEach(e => e.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+        // Helper
+        function updateUserUI() {
+            document.getElementById('myName').innerText = userData.displayName;
+            document.getElementById('myPfp').src = userData.photoURL || 'https://via.placeholder.com/40';
+            const status = userData.status || 'Online';
+            document.getElementById('myStatusText').innerText = status;
+            document.getElementById('myStatusDot').style.background = status === 'Online' ? 'var(--success)' : status === 'Busy' ? 'var(--danger)' : '#666';
+            
+            // Fill Settings
+            document.getElementById('set_disp').value = userData.displayName;
+            document.getElementById('set_bio').value = userData.bio || '';
+            document.getElementById('set_pfp').src = userData.photoURL;
         }
-        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal() { document.querySelectorAll('.modal-overlay').forEach(e=>e.style.display='none'); }
+        
+        // Buttons
+        document.getElementById('homeBtn').onclick = () => switchTab('dm', null);
+        document.getElementById('addFriendBtn').onclick = () => openModal('friendModal');
+        document.getElementById('addServerBtn').onclick = () => openModal('serverModal');
+        document.getElementById('leaveServerBtn').onclick = async () => {
+            if(confirm('Leave server?')) {
+                await db.collection('servers').doc(currentId).update({members:firebase.firestore.FieldValue.arrayRemove(currentUser.uid)});
+                switchTab('dm',null);
+            }
+        }
+        document.getElementById('addChannelBtn').onclick = () => {
+            const n = prompt("Channel name");
+            if(n) db.collection('servers').doc(currentId).collection('channels').add({name:n, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        }
+        document.getElementById('submitFriend').onclick = async () => {
+            const u = document.getElementById('friendInput').value.toLowerCase().trim();
+            const snap = await db.collection('users').where('username','==',u).get();
+            if(snap.empty) return alert('Not found');
+            const fid = snap.docs[0].id;
+            await db.collection('users').doc(currentUser.uid).update({friends:firebase.firestore.FieldValue.arrayUnion(fid)});
+            await db.collection('users').doc(fid).update({friends:firebase.firestore.FieldValue.arrayUnion(currentUser.uid)});
+            closeModal();
+        }
+        document.getElementById('joinServerBtn').onclick = async () => {
+            const c = document.getElementById('joinCode').value.trim();
+            const snap = await db.collection('servers').where('inviteCode','==',c).get();
+            if(snap.empty) return alert('Invalid');
+            await snap.docs[0].ref.update({members:firebase.firestore.FieldValue.arrayUnion(currentUser.uid)});
+            closeModal();
+        }
+        document.getElementById('loginBtn').onclick = async () => { try{await auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value)}catch(e){alert(e.message)} }
+        document.getElementById('signupBtn').onclick = async () => { try{await auth.createUserWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value)}catch(e){alert(e.message)} }
+        document.getElementById('googleBtn').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        document.getElementById('saveUserBtn').onclick = async () => {
+            const u = document.getElementById('pickUser').value.toLowerCase().trim();
+            const check = await db.collection('users').where('username','==',u).get();
+            if(!check.empty) return alert('Taken');
+            await db.collection('users').doc(currentUser.uid).set({
+                uid: currentUser.uid, email: currentUser.email, username: u, displayName: u, photoURL: '', friends: [],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            window.location.reload();
+        }
+        document.getElementById('logoutBtn').onclick = () => auth.signOut();
     </script>
 </body>
 </html>
