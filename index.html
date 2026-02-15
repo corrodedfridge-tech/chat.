@@ -41,7 +41,6 @@ body {
   overflow: hidden;
 }
 
-/* Auth Screens */
 .auth-container {
   display: flex;
   align-items: center;
@@ -153,7 +152,6 @@ body {
   display: none;
 }
 
-/* Main App Layout */
 .app-container {
   display: none;
   height: 100vh;
@@ -164,7 +162,6 @@ body {
   height: 100%;
 }
 
-/* Server List */
 .server-list {
   width: 72px;
   background: var(--bg-tertiary);
@@ -196,6 +193,7 @@ body {
   font-size: 18px;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .server-icon:hover, .server-icon.active {
@@ -232,6 +230,7 @@ body {
   background: var(--bg-modifier-selected);
   border-radius: 1px;
   margin: 4px 0;
+  flex-shrink: 0;
 }
 
 .server-pill {
@@ -252,13 +251,6 @@ body {
   height: 40px;
 }
 
-.server-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Channel Sidebar */
 .channel-sidebar {
   width: 240px;
   background: var(--bg-secondary);
@@ -318,13 +310,6 @@ body {
 
 .channel-category:hover span {
   color: var(--text-normal);
-}
-
-.channel-category svg {
-  width: 12px;
-  height: 12px;
-  fill: var(--text-muted);
-  transition: transform 0.1s;
 }
 
 .channel-item {
@@ -388,7 +373,6 @@ body {
   color: var(--text-normal);
 }
 
-/* Add channel button */
 .add-channel-btn {
   background: none;
   border: none;
@@ -403,7 +387,6 @@ body {
   color: var(--text-normal);
 }
 
-/* User Panel */
 .user-panel {
   height: 52px;
   background: rgba(17, 18, 20, 0.6);
@@ -464,7 +447,6 @@ body {
   color: var(--text-normal);
 }
 
-/* Chat Area */
 .chat-area {
   flex: 1;
   display: flex;
@@ -493,22 +475,6 @@ body {
   font-size: 16px;
 }
 
-.chat-header .divider {
-  width: 1px;
-  height: 24px;
-  background: var(--bg-modifier-selected);
-  margin: 0 8px;
-}
-
-.chat-header .channel-topic {
-  font-size: 14px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Members toggle */
 .header-actions {
   margin-left: auto;
   display: flex;
@@ -533,7 +499,6 @@ body {
   color: var(--header-primary);
 }
 
-/* Messages */
 .chat-content {
   display: flex;
   flex: 1;
@@ -683,7 +648,6 @@ body {
   display: block;
 }
 
-/* Message Input */
 .message-input-container {
   padding: 0 16px 24px;
   flex-shrink: 0;
@@ -730,7 +694,6 @@ body {
   color: var(--text-muted);
 }
 
-/* Members Sidebar */
 .members-sidebar {
   width: 240px;
   background: var(--bg-secondary);
@@ -817,7 +780,6 @@ body {
   color: var(--text-normal);
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -825,11 +787,10 @@ body {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  display: none;
 }
 
 .modal-overlay.show {
@@ -895,41 +856,96 @@ body {
   background: #a12d2f;
 }
 
-/* DM List */
-.dm-header {
-  padding: 12px 16px 4px;
+.invite-code {
+  background: var(--bg-tertiary);
+  padding: 12px;
+  border-radius: 4px;
+  font-family: 'Consolas', monospace;
+  font-size: 16px;
+  color: var(--header-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 12px;
 }
 
-.dm-header span {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-}
-
-.dm-item {
-  display: flex;
-  align-items: center;
-  padding: 6px 8px;
+.invite-code button {
+  padding: 6px 16px;
+  background: var(--brand-color);
+  color: white;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
+}
+
+.invite-code button:hover {
+  background: var(--brand-hover);
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--bg-modifier-selected);
+  border-top-color: var(--brand-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.context-menu {
+  position: fixed;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  padding: 6px 8px;
+  min-width: 188px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  z-index: 1500;
+  display: none;
+}
+
+.context-menu-item {
+  padding: 6px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-normal);
+  display: flex;
+  align-items: center;
   gap: 8px;
-  margin: 1px 0;
 }
 
-.dm-item:hover {
-  background: var(--bg-modifier-hover);
+.context-menu-item:hover {
+  background: var(--brand-color);
+  color: white;
 }
 
-.dm-item.active {
+.context-menu-item.danger {
+  color: var(--red);
+}
+
+.context-menu-item.danger:hover {
+  background: var(--red);
+  color: white;
+}
+
+.context-menu-separator {
+  height: 1px;
   background: var(--bg-modifier-selected);
+  margin: 4px 0;
 }
 
-/* Friends Area */
 .friends-area {
   display: none;
   flex: 1;
@@ -975,212 +991,20 @@ body {
   color: var(--header-primary);
 }
 
-.friends-tab.add-friend {
-  background: transparent;
-  color: var(--green);
-}
-
-.friends-tab.add-friend.active {
-  background: transparent;
-  color: white;
-}
-
 .friends-content {
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-}
-
-.friends-search {
-  width: 100%;
-  padding: 8px 12px;
-  background: var(--bg-tertiary);
-  border: none;
-  border-radius: 4px;
-  color: var(--text-normal);
-  font-size: 14px;
-  outline: none;
-  margin-bottom: 16px;
-}
-
-.friend-item {
   display: flex;
   align-items: center;
-  padding: 12px 8px;
-  border-top: 1px solid rgba(78, 80, 88, 0.3);
-  gap: 12px;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-.friend-item:hover {
-  background: var(--bg-modifier-hover);
+  justify-content: center;
 }
 
 .no-friends-msg {
   text-align: center;
-  padding: 40px;
   color: var(--text-muted);
 }
 
-/* Typing indicator */
-.typing-indicator {
-  padding: 4px 16px;
-  font-size: 12px;
-  color: var(--text-muted);
-  height: 24px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.typing-dots {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.typing-dots span {
-  width: 4px;
-  height: 4px;
-  background: var(--text-muted);
-  border-radius: 50%;
-  animation: typing 1.4s infinite;
-}
-
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typing {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-4px); }
-}
-
-/* Tooltips */
-.tooltip {
-  position: fixed;
-  background: var(--bg-tertiary);
-  color: var(--header-primary);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  pointer-events: none;
-  z-index: 2000;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  white-space: nowrap;
-  display: none;
-}
-
-/* Context Menu */
-.context-menu {
-  position: fixed;
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-  padding: 6px 8px;
-  min-width: 180px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  z-index: 1500;
-  display: none;
-}
-
-.context-menu-item {
-  padding: 6px 8px;
-  border-radius: 2px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-normal);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.context-menu-item:hover {
-  background: var(--brand-color);
-  color: white;
-}
-
-.context-menu-item.danger {
-  color: var(--red);
-}
-
-.context-menu-item.danger:hover {
-  background: var(--red);
-  color: white;
-}
-
-.context-menu-separator {
-  height: 1px;
-  background: var(--bg-modifier-selected);
-  margin: 4px 0;
-}
-
-/* Unread badge */
-.unread-badge {
-  background: var(--red);
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  margin-left: auto;
-}
-
-/* Invite modal */
-.invite-code {
-  background: var(--bg-tertiary);
-  padding: 12px;
-  border-radius: 4px;
-  font-family: 'Consolas', monospace;
-  font-size: 16px;
-  color: var(--header-primary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
-}
-
-.invite-code button {
-  padding: 6px 16px;
-  background: var(--brand-color);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.invite-code button:hover {
-  background: var(--brand-hover);
-}
-
-/* Loading spinner */
-.loading-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--text-muted);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--bg-modifier-selected);
-  border-top-color: var(--brand-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Settings */
 .settings-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -1238,6 +1062,11 @@ body {
   color: var(--red);
 }
 
+.settings-nav-item.danger:hover {
+  color: white;
+  background: var(--red);
+}
+
 .settings-nav-separator {
   height: 1px;
   background: var(--bg-modifier-selected);
@@ -1249,6 +1078,7 @@ body {
   padding: 60px 40px;
   overflow-y: auto;
   max-width: 740px;
+  position: relative;
 }
 
 .settings-content h2 {
@@ -1299,6 +1129,7 @@ body {
   font-size: 36px;
   font-weight: 700;
   color: white;
+  flex-shrink: 0;
 }
 
 .profile-card .profile-info h3 {
@@ -1311,25 +1142,51 @@ body {
   font-size: 14px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .channel-sidebar {
-    display: none;
-  }
-  .members-sidebar {
-    display: none !important;
-  }
-  .server-list {
-    width: 56px;
-  }
-  .server-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 14px;
-  }
+.typing-indicator {
+  padding: 4px 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-/* Color options for avatars */
+.typing-dots {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.typing-dots span {
+  width: 4px;
+  height: 4px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+.join-server-area {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.or-divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .avatar-color-0 { background: #5865f2 !important; }
 .avatar-color-1 { background: #57f287 !important; }
 .avatar-color-2 { background: #feb347 !important; }
@@ -1337,7 +1194,6 @@ body {
 .avatar-color-4 { background: #eb459e !important; }
 .avatar-color-5 { background: #9b59b6 !important; }
 
-/* Emoji/markdown */
 .msg-text strong { font-weight: 700; }
 .msg-text em { font-style: italic; }
 .msg-text code {
@@ -1347,7 +1203,6 @@ body {
   font-family: 'Consolas', monospace;
   font-size: 14px;
 }
-
 .msg-text pre {
   background: var(--bg-tertiary);
   padding: 8px;
@@ -1355,33 +1210,39 @@ body {
   margin: 4px 0;
   overflow-x: auto;
 }
-
 .msg-text pre code {
   background: none;
   padding: 0;
 }
 
-/* Join server */
-.join-server-area {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.msg-text a {
+  color: var(--text-link);
 }
 
-.join-server-area .or-divider {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 14px;
+.dm-header {
+  padding: 12px 8px 4px;
+}
+
+.dm-header span {
+  font-size: 12px;
   font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+  .channel-sidebar { display: none !important; }
+  .members-sidebar { display: none !important; }
+  .server-list { width: 56px; }
+  .server-icon { width: 40px; height: 40px; font-size: 14px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Auth Screen -->
 <div id="authScreen" class="auth-container">
   <div class="auth-box">
-    <!-- Login -->
     <div id="loginForm">
       <h2>Welcome back!</h2>
       <p class="subtitle">We're so excited to see you again!</p>
@@ -1397,7 +1258,6 @@ body {
       <button class="btn-primary" id="loginBtn">Log In</button>
       <p class="auth-switch">Need an account? <a id="showRegister">Register</a></p>
     </div>
-    <!-- Register -->
     <div id="registerForm" style="display:none">
       <h2>Create an account</h2>
       <div id="registerError" class="error-msg"></div>
@@ -1419,10 +1279,8 @@ body {
   </div>
 </div>
 
-<!-- Main App -->
 <div id="appContainer" class="app-container">
   <div class="app-layout">
-    <!-- Server List -->
     <div class="server-list" id="serverList">
       <div class="server-icon home" id="homeBtn" title="Direct Messages">
         <svg width="28" height="20" viewBox="0 0 28 20"><path fill="currentColor" d="M23.0212 1.67671C21.3107 0.879656 19.5079 0.318797 17.6584 0C17.4062 0.461742 17.1749 0.934541 16.9708 1.4184C15.003 1.12145 12.9974 1.12145 11.0292 1.4184C10.8251 0.934541 10.5765 0.461742 10.3416 0C8.49019 0.321376 6.68494 0.884437 4.97458 1.68386C1.2669 7.20471 0.213493 12.5895 0.740044 17.8968C2.90156 19.5181 5.55714 20.5792 8.37854 20.9974C8.9003 20.2882 9.35995 19.5283 9.74498 18.7353C8.99847 18.4642 8.28064 18.1216 7.60107 17.7153C7.78651 17.5773 7.96738 17.4367 8.14368 17.2935C12.6645 19.396 17.4965 19.396 21.9607 17.2935C22.1396 17.4393 22.3205 17.5799 22.5034 17.7153C21.8212 18.1242 21.1007 18.4695 20.3514 18.7405C20.739 19.5309 21.1988 20.2882 21.7178 20.9999C24.5418 20.5843 27.1999 19.5233 29.3601 17.8994C29.9809 11.7411 28.3355 6.40915 23.9693 1.67671H23.0212Z"></path></svg>
@@ -1435,7 +1293,6 @@ body {
       </div>
     </div>
 
-    <!-- Channel Sidebar -->
     <div class="channel-sidebar" id="channelSidebar">
       <div class="server-header" id="serverHeader">
         <span id="serverName">Server Name</span>
@@ -1452,21 +1309,18 @@ body {
       </div>
     </div>
 
-    <!-- Chat Area -->
     <div class="chat-area" id="chatArea">
       <div class="chat-header" id="chatHeader">
         <span class="channel-hash">#</span>
         <span class="channel-name" id="chatChannelName">general</span>
         <div class="header-actions">
-          <button class="header-action-btn" id="toggleMembersBtn" title="Member List">👥</button>
+          <button class="header-action-btn active" id="toggleMembersBtn" title="Member List">👥</button>
         </div>
       </div>
       <div class="chat-content">
         <div class="messages-wrapper">
           <div class="messages-container" id="messagesContainer">
-            <div class="loading-spinner" id="messagesLoading">
-              <div class="spinner"></div>
-            </div>
+            <div class="loading-spinner"><div class="spinner"></div></div>
           </div>
           <div class="typing-indicator" id="typingIndicator"></div>
           <div class="message-input-container">
@@ -1480,43 +1334,39 @@ body {
       </div>
     </div>
 
-    <!-- Friends Area (shown when Home is selected) -->
     <div class="friends-area" id="friendsArea">
       <div class="friends-header">
         <span class="title">Friends</span>
         <div class="divider"></div>
-        <span class="friends-tab active" data-tab="online">Online</span>
-        <span class="friends-tab" data-tab="all">All</span>
-        <span class="friends-tab" data-tab="pending">Pending</span>
-        <span class="friends-tab add-friend" data-tab="add">Add Friend</span>
+        <span class="friends-tab active">Online</span>
+        <span class="friends-tab">All</span>
+        <span class="friends-tab">Pending</span>
       </div>
       <div class="friends-content" id="friendsContent">
         <div class="no-friends-msg">
-          <p>Wumpus is waiting for friends. You don't have to though!</p>
+          <p style="font-size:48px; margin-bottom:16px;">👋</p>
+          <p style="font-size:16px;">No one's around to play with Wumpus.</p>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modals -->
 <div class="modal-overlay" id="createServerModal">
   <div class="modal">
-    <h2 id="serverModalTitle">Create a Server</h2>
-    <div id="createServerContent">
-      <div class="join-server-area">
-        <div class="form-group">
-          <label>SERVER NAME</label>
-          <input type="text" id="newServerName" placeholder="My Awesome Server" maxlength="100">
-        </div>
-        <button class="btn-submit" id="createServerBtn" style="width:100%">Create Server</button>
-        <div class="or-divider">OR</div>
-        <div class="form-group">
-          <label>JOIN WITH INVITE CODE</label>
-          <input type="text" id="joinServerCode" placeholder="Enter an invite code">
-        </div>
-        <button class="btn-submit" id="joinServerBtn" style="width:100%">Join Server</button>
+    <h2>Create or Join a Server</h2>
+    <div class="join-server-area">
+      <div class="form-group">
+        <label>SERVER NAME</label>
+        <input type="text" id="newServerName" placeholder="My Awesome Server" maxlength="100">
       </div>
+      <button class="btn-submit" id="createServerBtn" style="width:100%">Create Server</button>
+      <div class="or-divider">OR</div>
+      <div class="form-group">
+        <label>JOIN WITH INVITE CODE</label>
+        <input type="text" id="joinServerCode" placeholder="Enter an invite code">
+      </div>
+      <button class="btn-submit" id="joinServerBtn" style="width:100%">Join Server</button>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" id="cancelCreateServer">Cancel</button>
@@ -1541,7 +1391,7 @@ body {
 <div class="modal-overlay" id="inviteModal">
   <div class="modal">
     <h2>Invite People</h2>
-    <p style="color: var(--text-muted); font-size:14px;">Share this code with friends to let them join:</p>
+    <p style="color:var(--text-muted);font-size:14px;">Share this code with friends to let them join:</p>
     <div class="invite-code">
       <span id="inviteCodeText"></span>
       <button id="copyInviteBtn">Copy</button>
@@ -1552,16 +1402,14 @@ body {
   </div>
 </div>
 
-<!-- Server Context Menu -->
 <div class="context-menu" id="serverContextMenu">
-  <div class="context-menu-item" id="ctxInvite">✉ Invite People</div>
-  <div class="context-menu-item" id="ctxCreateChannel">＋ Create Channel</div>
+  <div class="context-menu-item" id="ctxInvite">✉️ Invite People</div>
+  <div class="context-menu-item" id="ctxCreateChannel">➕ Create Channel</div>
   <div class="context-menu-separator"></div>
   <div class="context-menu-item danger" id="ctxLeaveServer">🚪 Leave Server</div>
-  <div class="context-menu-item danger" id="ctxDeleteServer" style="display:none">🗑 Delete Server</div>
+  <div class="context-menu-item danger" id="ctxDeleteServer" style="display:none">🗑️ Delete Server</div>
 </div>
 
-<!-- Settings Overlay -->
 <div class="settings-overlay" id="settingsOverlay">
   <div class="settings-sidebar">
     <div class="settings-nav">
@@ -1591,34 +1439,27 @@ body {
   </div>
 </div>
 
-<!-- Tooltip -->
-<div class="tooltip" id="tooltip"></div>
-
-<!-- Firebase SDK -->
+<!-- Firebase Compat SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ==================================================================
-// FIREBASE CONFIG - Replace with your own Firebase project config!
-// ==================================================================
+// ===== FIREBASE CONFIG =====
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBJMIUucxOusoVzs4lc-QurCxjlW6Hlsuw",
+  authDomain: "chat-5f0bf.firebaseapp.com",
+  projectId: "chat-5f0bf",
+  storageBucket: "chat-5f0bf.firebasestorage.app",
+  messagingSenderId: "211425841353",
+  appId: "1:211425841353:web:e1c271a340d73abd0cfd18"
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ==================================================================
-// STATE
-// ==================================================================
+// ===== STATE =====
 let currentUser = null;
 let userProfile = null;
 let currentServerId = null;
@@ -1631,15 +1472,12 @@ let unsubMessages = null;
 let unsubChannels = null;
 let unsubMembers = null;
 let unsubServers = null;
-let typingTimeout = null;
 let unsubTyping = null;
+let typingTimeout = null;
 let isHome = true;
 
-// ==================================================================
-// DOM REFS
-// ==================================================================
+// ===== DOM =====
 const $ = id => document.getElementById(id);
-
 const authScreen = $('authScreen');
 const appContainer = $('appContainer');
 const loginForm = $('loginForm');
@@ -1657,9 +1495,7 @@ const membersSidebar = $('membersSidebar');
 const typingIndicator = $('typingIndicator');
 const serverContextMenu = $('serverContextMenu');
 
-// ==================================================================
-// AUTH
-// ==================================================================
+// ===== AUTH UI =====
 $('showRegister').onclick = () => {
   loginForm.style.display = 'none';
   registerForm.style.display = 'block';
@@ -1674,74 +1510,61 @@ $('showLogin').onclick = () => {
 
 $('loginBtn').onclick = async () => {
   const email = $('loginEmail').value.trim();
-  const password = $('loginPassword').value;
-  if (!email || !password) { showError(loginError, 'Please fill in all fields'); return; }
+  const pw = $('loginPassword').value;
+  if (!email || !pw) return showError(loginError, 'Fill in all fields.');
   $('loginBtn').disabled = true;
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-  } catch (e) {
-    showError(loginError, mapAuthError(e.code));
-  }
+  try { await auth.signInWithEmailAndPassword(email, pw); }
+  catch (e) { showError(loginError, mapErr(e.code)); }
   $('loginBtn').disabled = false;
 };
 
 $('registerBtn').onclick = async () => {
   const email = $('regEmail').value.trim();
   const username = $('regUsername').value.trim();
-  const password = $('regPassword').value;
-  if (!email || !username || !password) { showError(registerError, 'Please fill in all fields'); return; }
-  if (password.length < 6) { showError(registerError, 'Password must be at least 6 characters'); return; }
+  const pw = $('regPassword').value;
+  if (!email || !username || !pw) return showError(registerError, 'Fill in all fields.');
+  if (pw.length < 6) return showError(registerError, 'Password must be at least 6 characters.');
   $('registerBtn').disabled = true;
   try {
-    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    const cred = await auth.createUserWithEmailAndPassword(email, pw);
     await db.collection('users').doc(cred.user.uid).set({
-      email,
-      username,
+      email, username,
       avatarColor: Math.floor(Math.random() * 6),
       status: 'online',
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       servers: []
     });
-  } catch (e) {
-    showError(registerError, mapAuthError(e.code));
-  }
+  } catch (e) { showError(registerError, mapErr(e.code)); }
   $('registerBtn').disabled = false;
 };
 
-// Enter key on auth forms
 $('loginPassword').onkeydown = e => { if (e.key === 'Enter') $('loginBtn').click(); };
 $('regPassword').onkeydown = e => { if (e.key === 'Enter') $('registerBtn').click(); };
 
-function showError(el, msg) {
-  el.textContent = msg;
-  el.style.display = 'block';
-}
+function showError(el, msg) { el.textContent = msg; el.style.display = 'block'; }
 
-function mapAuthError(code) {
-  const map = {
-    'auth/email-already-in-use': 'Email already registered',
-    'auth/invalid-email': 'Invalid email address',
-    'auth/wrong-password': 'Incorrect password',
-    'auth/user-not-found': 'No account found with that email',
-    'auth/weak-password': 'Password is too weak',
-    'auth/invalid-credential': 'Invalid email or password',
-    'auth/too-many-requests': 'Too many attempts. Try again later.'
+function mapErr(code) {
+  const m = {
+    'auth/email-already-in-use': 'Email already registered.',
+    'auth/invalid-email': 'Invalid email.',
+    'auth/wrong-password': 'Incorrect password.',
+    'auth/user-not-found': 'No account found.',
+    'auth/weak-password': 'Password too weak.',
+    'auth/invalid-credential': 'Invalid email or password.',
+    'auth/too-many-requests': 'Too many attempts. Wait a bit.'
   };
-  return map[code] || 'An error occurred. Please try again.';
+  return m[code] || 'Something went wrong.';
 }
 
-// Auth state listener
+// ===== AUTH STATE =====
 auth.onAuthStateChanged(async user => {
   if (user) {
     currentUser = user;
     const doc = await db.collection('users').doc(user.uid).get();
-    if (doc.exists) {
-      userProfile = { id: user.uid, ...doc.data() };
-    } else {
-      userProfile = { id: user.uid, username: user.email.split('@')[0], email: user.email, avatarColor: 0, servers: [] };
-    }
-    // Set online status
-    await db.collection('users').doc(user.uid).update({ status: 'online' });
+    userProfile = doc.exists
+      ? { id: user.uid, ...doc.data() }
+      : { id: user.uid, username: user.email.split('@')[0], email: user.email, avatarColor: 0, servers: [] };
+    db.collection('users').doc(user.uid).update({ status: 'online' }).catch(()=>{});
     authScreen.style.display = 'none';
     appContainer.style.display = 'block';
     initApp();
@@ -1754,9 +1577,7 @@ auth.onAuthStateChanged(async user => {
   }
 });
 
-// ==================================================================
-// INIT APP
-// ==================================================================
+// ===== INIT =====
 function initApp() {
   updateUserPanel();
   loadServers();
@@ -1764,88 +1585,77 @@ function initApp() {
 }
 
 function updateUserPanel() {
-  const initial = userProfile.username ? userProfile.username[0].toUpperCase() : '?';
-  $('userPanelAvatar').textContent = initial;
-  $('userPanelAvatar').className = `user-avatar avatar-color-${userProfile.avatarColor || 0}`;
+  const ini = (userProfile.username || '?')[0].toUpperCase();
+  const cls = `avatar-color-${userProfile.avatarColor || 0}`;
+  $('userPanelAvatar').textContent = ini;
+  $('userPanelAvatar').className = 'user-avatar ' + cls;
   $('userPanelName').textContent = userProfile.username;
-  $('settingsAvatar').textContent = initial;
-  $('settingsAvatar').className = `avatar-large avatar-color-${userProfile.avatarColor || 0}`;
+  $('settingsAvatar').textContent = ini;
+  $('settingsAvatar').className = 'avatar-large ' + cls;
   $('settingsUsername').textContent = userProfile.username;
   $('settingsEmail').textContent = userProfile.email || currentUser.email;
   $('editDisplayName').value = userProfile.username;
 }
 
 function cleanup() {
-  if (unsubMessages) unsubMessages();
-  if (unsubChannels) unsubChannels();
-  if (unsubMembers) unsubMembers();
-  if (unsubServers) unsubServers();
-  if (unsubTyping) unsubTyping();
+  [unsubMessages, unsubChannels, unsubMembers, unsubServers, unsubTyping].forEach(u => u && u());
+  unsubMessages = unsubChannels = unsubMembers = unsubServers = unsubTyping = null;
 }
 
-// ==================================================================
-// SERVERS
-// ==================================================================
+// ===== SERVERS =====
 function loadServers() {
   if (unsubServers) unsubServers();
-  unsubServers = db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
+  unsubServers = db.collection('users').doc(currentUser.uid).onSnapshot(async doc => {
     if (!doc.exists) return;
     const data = doc.data();
     userProfile = { id: currentUser.uid, ...data };
     updateUserPanel();
-    const serverIds = data.servers || [];
-    if (serverIds.length === 0) {
-      servers = [];
-      renderServerIcons();
-      return;
-    }
-    // Fetch server docs
-    Promise.all(serverIds.map(sid => db.collection('servers').doc(sid).get())).then(docs => {
-      servers = docs.filter(d => d.exists).map(d => ({ id: d.id, ...d.data() }));
-      renderServerIcons();
-    });
+    const ids = data.servers || [];
+    if (ids.length === 0) { servers = []; renderServerIcons(); return; }
+    const docs = await Promise.all(ids.map(id => db.collection('servers').doc(id).get()));
+    servers = docs.filter(d => d.exists).map(d => ({ id: d.id, ...d.data() }));
+    renderServerIcons();
   });
 }
 
 function renderServerIcons() {
   serverIconList.innerHTML = '';
-  servers.forEach(server => {
-    const icon = document.createElement('div');
-    icon.className = `server-icon${currentServerId === server.id ? ' active' : ''}`;
-    icon.title = server.name;
-    icon.textContent = server.name ? server.name.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase() : '?';
-    icon.innerHTML += '<span class="server-pill"></span>';
-    icon.onclick = () => selectServer(server.id);
-    icon.oncontextmenu = e => showServerContextMenu(e, server);
-    serverIconList.appendChild(icon);
+  servers.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'server-icon' + (currentServerId === s.id ? ' active' : '');
+    el.title = s.name;
+    el.textContent = s.name ? s.name.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase() : '?';
+    const pill = document.createElement('span');
+    pill.className = 'server-pill';
+    el.appendChild(pill);
+    el.onclick = () => selectServer(s.id);
+    el.oncontextmenu = e => showCtxMenu(e, s);
+    serverIconList.appendChild(el);
   });
 }
 
-function selectServer(serverId) {
+function selectServer(id) {
   isHome = false;
-  currentServerId = serverId;
+  currentServerId = id;
   renderServerIcons();
-  document.querySelectorAll('.server-icon.home').forEach(e => e.classList.remove('active'));
+  $('homeBtn').classList.remove('active');
   chatArea.style.display = 'flex';
   friendsArea.style.display = 'none';
   channelSidebar.style.display = 'flex';
-  const server = servers.find(s => s.id === serverId);
-  $('serverName').textContent = server ? server.name : 'Server';
-  loadChannels(serverId);
-  loadMembers(serverId);
+  const s = servers.find(x => x.id === id);
+  $('serverName').textContent = s ? s.name : 'Server';
+  loadChannels(id);
+  loadMembers(id);
 }
 
-// Home button
 $('homeBtn').onclick = () => goHome();
 
 function goHome() {
   isHome = true;
   currentServerId = null;
   currentChannelId = null;
-  if (unsubChannels) unsubChannels();
-  if (unsubMessages) unsubMessages();
-  if (unsubMembers) unsubMembers();
-  if (unsubTyping) unsubTyping();
+  [unsubChannels, unsubMessages, unsubMembers, unsubTyping].forEach(u => u && u());
+  unsubChannels = unsubMessages = unsubMembers = unsubTyping = null;
   renderServerIcons();
   $('homeBtn').classList.add('active');
   chatArea.style.display = 'none';
@@ -1854,22 +1664,17 @@ function goHome() {
   $('serverName').textContent = 'Direct Messages';
   channelList.innerHTML = `
     <div class="dm-header"><span>DIRECT MESSAGES</span></div>
-    <div style="padding: 16px; text-align:center; color: var(--text-muted); font-size:14px;">
-      DMs coming soon! Use servers to chat.
-    </div>
-  `;
-  renderFriends();
+    <div style="padding:20px 8px;text-align:center;color:var(--text-muted);font-size:14px;">
+      Select a server or create one to start chatting!
+    </div>`;
 }
 
-// ==================================================================
-// CREATE / JOIN SERVER
-// ==================================================================
+// ===== CREATE / JOIN SERVER =====
 $('addServerBtn').onclick = () => {
   $('createServerModal').classList.add('show');
-  $('newServerName').value = `${userProfile.username}'s server`;
+  $('newServerName').value = (userProfile.username || 'My') + "'s server";
   $('joinServerCode').value = '';
 };
-
 $('cancelCreateServer').onclick = () => $('createServerModal').classList.remove('show');
 
 $('createServerBtn').onclick = async () => {
@@ -1877,29 +1682,21 @@ $('createServerBtn').onclick = async () => {
   if (!name) return;
   $('createServerBtn').disabled = true;
   try {
-    const inviteCode = generateInviteCode();
-    const serverRef = await db.collection('servers').add({
-      name,
-      ownerId: currentUser.uid,
-      inviteCode,
+    const code = genCode();
+    const ref = await db.collection('servers').add({
+      name, ownerId: currentUser.uid, inviteCode: code,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       members: [currentUser.uid]
     });
-    // Create default channel
-    await db.collection('servers').doc(serverRef.id).collection('channels').add({
-      name: 'general',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    await db.collection('servers').doc(ref.id).collection('channels').add({
+      name: 'general', createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    // Add server to user
     await db.collection('users').doc(currentUser.uid).update({
-      servers: firebase.firestore.FieldValue.arrayUnion(serverRef.id)
+      servers: firebase.firestore.FieldValue.arrayUnion(ref.id)
     });
     $('createServerModal').classList.remove('show');
-    selectServer(serverRef.id);
-  } catch (e) {
-    console.error(e);
-    alert('Failed to create server');
-  }
+    selectServer(ref.id);
+  } catch (e) { console.error(e); alert('Failed to create server.'); }
   $('createServerBtn').disabled = false;
 };
 
@@ -1909,446 +1706,278 @@ $('joinServerBtn').onclick = async () => {
   $('joinServerBtn').disabled = true;
   try {
     const snap = await db.collection('servers').where('inviteCode', '==', code).limit(1).get();
-    if (snap.empty) {
-      alert('Invalid invite code');
-      $('joinServerBtn').disabled = false;
-      return;
-    }
-    const serverDoc = snap.docs[0];
-    const serverId = serverDoc.id;
-    const serverData = serverDoc.data();
-    if (serverData.members && serverData.members.includes(currentUser.uid)) {
-      alert('You are already in this server');
-      $('joinServerBtn').disabled = false;
+    if (snap.empty) { alert('Invalid invite code.'); $('joinServerBtn').disabled = false; return; }
+    const sdoc = snap.docs[0];
+    const sid = sdoc.id;
+    if ((sdoc.data().members || []).includes(currentUser.uid)) {
       $('createServerModal').classList.remove('show');
-      selectServer(serverId);
+      selectServer(sid);
+      $('joinServerBtn').disabled = false;
       return;
     }
-    await db.collection('servers').doc(serverId).update({
-      members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-    });
-    await db.collection('users').doc(currentUser.uid).update({
-      servers: firebase.firestore.FieldValue.arrayUnion(serverId)
-    });
+    await db.collection('servers').doc(sid).update({ members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+    await db.collection('users').doc(currentUser.uid).update({ servers: firebase.firestore.FieldValue.arrayUnion(sid) });
     $('createServerModal').classList.remove('show');
-    selectServer(serverId);
-  } catch (e) {
-    console.error(e);
-    alert('Failed to join server');
-  }
+    selectServer(sid);
+  } catch (e) { console.error(e); alert('Failed to join server.'); }
   $('joinServerBtn').disabled = false;
 };
 
-function generateInviteCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-  let code = '';
-  for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return code;
+function genCode() {
+  const c = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let r = ''; for (let i = 0; i < 8; i++) r += c[Math.floor(Math.random() * c.length)]; return r;
 }
 
-// ==================================================================
-// CHANNELS
-// ==================================================================
+// ===== CHANNELS =====
 function loadChannels(serverId) {
   if (unsubChannels) unsubChannels();
-  const server = servers.find(s => s.id === serverId);
   unsubChannels = db.collection('servers').doc(serverId).collection('channels')
-    .orderBy('createdAt', 'asc')
-    .onSnapshot(snap => {
+    .orderBy('createdAt', 'asc').onSnapshot(snap => {
       channels = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderChannels(server);
-      // Auto select first channel if none selected
+      renderChannels();
       if (!currentChannelId || !channels.find(c => c.id === currentChannelId)) {
-        if (channels.length > 0) selectChannel(channels[0].id);
+        if (channels.length) selectChannel(channels[0].id);
       }
     });
 }
 
-function renderChannels(server) {
+function renderChannels() {
+  const server = servers.find(s => s.id === currentServerId);
   channelList.innerHTML = '';
-  // Category
   const cat = document.createElement('div');
   cat.className = 'channel-category';
-  cat.innerHTML = `<svg viewBox="0 0 12 12"><path fill="currentColor" d="M1.646 4.646a.5.5 0 0 1 .708 0L6 8.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z"/></svg>
-    <span>Text Channels</span>`;
-  // Add channel button (only for owner)
+  cat.innerHTML = '<span>Text Channels</span>';
   if (server && server.ownerId === currentUser.uid) {
-    const addBtn = document.createElement('button');
-    addBtn.className = 'add-channel-btn';
-    addBtn.textContent = '+';
-    addBtn.title = 'Create Channel';
-    addBtn.onclick = e => { e.stopPropagation(); $('createChannelModal').classList.add('show'); $('newChannelName').value = ''; };
-    cat.appendChild(addBtn);
+    const btn = document.createElement('button');
+    btn.className = 'add-channel-btn'; btn.textContent = '+'; btn.title = 'Create Channel';
+    btn.onclick = e => { e.stopPropagation(); $('createChannelModal').classList.add('show'); $('newChannelName').value = ''; };
+    cat.appendChild(btn);
   }
   channelList.appendChild(cat);
-
   channels.forEach(ch => {
     const item = document.createElement('div');
-    item.className = `channel-item${currentChannelId === ch.id ? ' active' : ''}`;
-    item.innerHTML = `<span class="channel-hash">#</span><span class="channel-name">${escapeHtml(ch.name)}</span>`;
-    // Delete button for owner
+    item.className = 'channel-item' + (currentChannelId === ch.id ? ' active' : '');
+    item.innerHTML = `<span class="channel-hash">#</span><span class="channel-name">${esc(ch.name)}</span>`;
     if (server && server.ownerId === currentUser.uid && channels.length > 1) {
-      const actions = document.createElement('div');
-      actions.className = 'channel-actions';
-      const delBtn = document.createElement('button');
-      delBtn.className = 'channel-action-btn';
-      delBtn.textContent = '✕';
-      delBtn.title = 'Delete Channel';
-      delBtn.onclick = async e => {
-        e.stopPropagation();
-        if (confirm(`Delete #${ch.name}?`)) {
-          await db.collection('servers').doc(currentServerId).collection('channels').doc(ch.id).delete();
-        }
-      };
-      actions.appendChild(delBtn);
-      item.appendChild(actions);
+      const acts = document.createElement('div'); acts.className = 'channel-actions';
+      const del = document.createElement('button'); del.className = 'channel-action-btn'; del.textContent = '✕'; del.title = 'Delete';
+      del.onclick = async e => { e.stopPropagation(); if (confirm(`Delete #${ch.name}?`)) await db.collection('servers').doc(currentServerId).collection('channels').doc(ch.id).delete(); };
+      acts.appendChild(del); item.appendChild(acts);
     }
     item.onclick = () => selectChannel(ch.id);
     channelList.appendChild(item);
   });
 }
 
-function selectChannel(channelId) {
-  currentChannelId = channelId;
-  const ch = channels.find(c => c.id === channelId);
-  if (ch) {
-    $('chatChannelName').textContent = ch.name;
-    messageInput.placeholder = `Message #${ch.name}`;
-  }
-  renderChannels(servers.find(s => s.id === currentServerId));
+function selectChannel(id) {
+  currentChannelId = id;
+  const ch = channels.find(c => c.id === id);
+  if (ch) { $('chatChannelName').textContent = ch.name; messageInput.placeholder = `Message #${ch.name}`; }
+  renderChannels();
   loadMessages();
   listenTyping();
 }
 
-// Create channel
 $('cancelCreateChannel').onclick = () => $('createChannelModal').classList.remove('show');
 $('createChannelBtn').onclick = async () => {
-  let name = $('newChannelName').value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-_]/g, '');
+  let name = $('newChannelName').value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-_]/g, '');
   if (!name) return;
   $('createChannelBtn').disabled = true;
   try {
-    await db.collection('servers').doc(currentServerId).collection('channels').add({
-      name,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await db.collection('servers').doc(currentServerId).collection('channels').add({ name, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     $('createChannelModal').classList.remove('show');
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) { console.error(e); }
   $('createChannelBtn').disabled = false;
 };
 $('newChannelName').onkeydown = e => { if (e.key === 'Enter') $('createChannelBtn').click(); };
 
-// ==================================================================
-// MESSAGES
-// ==================================================================
+// ===== MESSAGES =====
 function loadMessages() {
   if (unsubMessages) unsubMessages();
   if (!currentServerId || !currentChannelId) return;
   messagesContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
-
   unsubMessages = db.collection('servers').doc(currentServerId)
     .collection('channels').doc(currentChannelId)
-    .collection('messages')
-    .orderBy('createdAt', 'asc')
-    .limitToLast(100)
+    .collection('messages').orderBy('createdAt', 'asc').limitToLast(100)
     .onSnapshot(snap => {
-      const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderMessages(msgs);
+      renderMessages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
 }
 
 function renderMessages(msgs) {
   const ch = channels.find(c => c.id === currentChannelId);
-  const wasAtBottom = isScrolledToBottom();
+  const atBot = isAtBottom();
   messagesContainer.innerHTML = '';
-
-  // Welcome message
-  const welcome = document.createElement('div');
-  welcome.className = 'welcome-message';
-  welcome.innerHTML = `
-    <div class="channel-icon-large">#</div>
-    <h1>Welcome to #${escapeHtml(ch ? ch.name : 'channel')}</h1>
-    <p>This is the start of the #${escapeHtml(ch ? ch.name : 'channel')} channel.</p>
-  `;
-  messagesContainer.appendChild(welcome);
-
-  let lastAuthor = null;
-  let lastTime = null;
-
+  const w = document.createElement('div'); w.className = 'welcome-message';
+  w.innerHTML = `<div class="channel-icon-large">#</div><h1>Welcome to #${esc(ch ? ch.name : 'channel')}</h1><p>This is the start of #${esc(ch ? ch.name : 'channel')}.</p>`;
+  messagesContainer.appendChild(w);
+  let lastAuth = null, lastTs = null;
   msgs.forEach(msg => {
-    const isNewGroup = msg.authorId !== lastAuthor ||
-      !lastTime || !msg.createdAt ||
-      (msg.createdAt && lastTime && (msg.createdAt.toMillis() - lastTime > 7 * 60 * 1000));
-
+    const newGroup = msg.authorId !== lastAuth || !lastTs || !msg.createdAt || (msg.createdAt.toMillis() - lastTs > 420000);
     const div = document.createElement('div');
-    div.className = `message-group${isNewGroup ? ' has-header' : ''}`;
-
-    const time = msg.createdAt ? msg.createdAt.toDate() : new Date();
-    const timeStr = formatTime(time);
-    const dateStr = formatDate(time);
-
-    if (isNewGroup) {
-      const colorClass = `avatar-color-${msg.avatarColor || 0}`;
-      const initial = msg.authorName ? msg.authorName[0].toUpperCase() : '?';
+    div.className = 'message-group' + (newGroup ? ' has-header' : '');
+    const t = msg.createdAt ? msg.createdAt.toDate() : new Date();
+    if (newGroup) {
       div.innerHTML = `
-        <div class="msg-avatar ${colorClass}">${escapeHtml(initial)}</div>
+        <div class="msg-avatar avatar-color-${msg.avatarColor||0}">${esc((msg.authorName||'?')[0].toUpperCase())}</div>
         <div class="msg-content">
           <div class="msg-header">
-            <span class="msg-author">${escapeHtml(msg.authorName || 'Unknown')}</span>
-            <span class="msg-timestamp">${dateStr} ${timeStr}</span>
+            <span class="msg-author">${esc(msg.authorName||'Unknown')}</span>
+            <span class="msg-timestamp">${fmtDate(t)} ${fmtTime(t)}</span>
           </div>
-          <div class="msg-text">${formatMessageText(msg.text || '')}</div>
-        </div>
-      `;
+          <div class="msg-text">${fmtMsg(msg.text||'')}</div>
+        </div>`;
     } else {
       div.innerHTML = `
         <div class="msg-avatar collapsed"></div>
         <div class="msg-content">
-          <span class="msg-hover-timestamp">${timeStr}</span>
-          <div class="msg-text">${formatMessageText(msg.text || '')}</div>
-        </div>
-      `;
+          <span class="msg-hover-timestamp">${fmtTime(t)}</span>
+          <div class="msg-text">${fmtMsg(msg.text||'')}</div>
+        </div>`;
     }
-
     messagesContainer.appendChild(div);
-    lastAuthor = msg.authorId;
-    lastTime = msg.createdAt ? msg.createdAt.toMillis() : Date.now();
+    lastAuth = msg.authorId;
+    lastTs = msg.createdAt ? msg.createdAt.toMillis() : Date.now();
   });
-
-  if (wasAtBottom || msgs.length === 0) {
-    scrollToBottom();
-  }
+  if (atBot || msgs.length === 0) scrollBot();
 }
 
-function formatMessageText(text) {
-  let t = escapeHtml(text);
-  // Code blocks
+function fmtMsg(text) {
+  let t = esc(text);
   t = t.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-  // Inline code
   t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // Bold
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // Italic
   t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  // Underline
   t = t.replace(/__(.+?)__/g, '<u>$1</u>');
-  // Links
-  t = t.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" style="color:var(--text-link)">$1</a>');
+  t = t.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   return t;
 }
 
-function isScrolledToBottom() {
-  return messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 100;
-}
+function isAtBottom() { return messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 100; }
+function scrollBot() { requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; }); }
 
-function scrollToBottom() {
-  requestAnimationFrame(() => {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  });
-}
+messageInput.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } };
 
-// Send message
-messageInput.onkeydown = e => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-};
-
-async function sendMessage() {
+async function sendMsg() {
   const text = messageInput.value.trim();
   if (!text || !currentServerId || !currentChannelId) return;
   messageInput.value = '';
-  autoResizeInput();
+  autoResize();
   try {
     await db.collection('servers').doc(currentServerId)
       .collection('channels').doc(currentChannelId)
       .collection('messages').add({
-        text,
-        authorId: currentUser.uid,
-        authorName: userProfile.username,
+        text, authorId: currentUser.uid, authorName: userProfile.username,
         avatarColor: userProfile.avatarColor || 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    // Clear typing
-    clearTypingIndicator();
-  } catch (e) {
-    console.error('Send message error:', e);
-  }
+    clearTyping();
+  } catch (e) { console.error(e); }
 }
 
-// Auto resize textarea
-messageInput.oninput = () => {
-  autoResizeInput();
-  setTyping();
-};
+messageInput.oninput = () => { autoResize(); setTyping(); };
+function autoResize() { messageInput.style.height = 'auto'; messageInput.style.height = Math.min(messageInput.scrollHeight, 300) + 'px'; }
 
-function autoResizeInput() {
-  messageInput.style.height = 'auto';
-  messageInput.style.height = Math.min(messageInput.scrollHeight, 300) + 'px';
-}
-
-// ==================================================================
-// TYPING INDICATOR
-// ==================================================================
+// ===== TYPING =====
 function setTyping() {
   if (!currentServerId || !currentChannelId) return;
-  const ref = db.collection('servers').doc(currentServerId)
-    .collection('channels').doc(currentChannelId)
-    .collection('typing').doc(currentUser.uid);
-
-  ref.set({
-    username: userProfile.username,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
-
+  const ref = db.collection('servers').doc(currentServerId).collection('channels').doc(currentChannelId).collection('typing').doc(currentUser.uid);
+  ref.set({ username: userProfile.username, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
   if (typingTimeout) clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => {
-    ref.delete().catch(() => {});
-  }, 5000);
+  typingTimeout = setTimeout(() => ref.delete().catch(()=>{}), 5000);
 }
 
-function clearTypingIndicator() {
+function clearTyping() {
   if (!currentServerId || !currentChannelId) return;
-  db.collection('servers').doc(currentServerId)
-    .collection('channels').doc(currentChannelId)
-    .collection('typing').doc(currentUser.uid)
-    .delete().catch(() => {});
+  db.collection('servers').doc(currentServerId).collection('channels').doc(currentChannelId).collection('typing').doc(currentUser.uid).delete().catch(()=>{});
   if (typingTimeout) clearTimeout(typingTimeout);
 }
 
 function listenTyping() {
   if (unsubTyping) unsubTyping();
   if (!currentServerId || !currentChannelId) return;
-
-  unsubTyping = db.collection('servers').doc(currentServerId)
-    .collection('channels').doc(currentChannelId)
-    .collection('typing')
+  unsubTyping = db.collection('servers').doc(currentServerId).collection('channels').doc(currentChannelId).collection('typing')
     .onSnapshot(snap => {
-      const typists = [];
       const now = Date.now();
+      const names = [];
       snap.docs.forEach(d => {
         if (d.id === currentUser.uid) return;
         const data = d.data();
-        if (data.timestamp && (now - data.timestamp.toMillis() < 8000)) {
-          typists.push(data.username);
-        }
+        if (data.timestamp && (now - data.timestamp.toMillis() < 8000)) names.push(data.username);
       });
-      if (typists.length === 0) {
-        typingIndicator.innerHTML = '';
-      } else if (typists.length === 1) {
-        typingIndicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> <strong>${escapeHtml(typists[0])}</strong> is typing...`;
-      } else if (typists.length <= 3) {
-        typingIndicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> <strong>${typists.map(escapeHtml).join(', ')}</strong> are typing...`;
-      } else {
-        typingIndicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> Several people are typing...`;
-      }
+      if (!names.length) typingIndicator.innerHTML = '';
+      else if (names.length === 1) typingIndicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> <strong>${esc(names[0])}</strong> is typing...`;
+      else if (names.length <= 3) typingIndicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> <strong>${names.map(esc).join(', ')}</strong> are typing...`;
+      else typingIndicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> Several people are typing...`;
     });
 }
 
-// ==================================================================
-// MEMBERS
-// ==================================================================
+// ===== MEMBERS =====
 function loadMembers(serverId) {
   if (unsubMembers) unsubMembers();
   unsubMembers = db.collection('servers').doc(serverId).onSnapshot(async doc => {
     if (!doc.exists) return;
-    const data = doc.data();
-    const memberIds = data.members || [];
-    if (memberIds.length === 0) {
-      members = [];
-      renderMembers();
-      return;
+    const ids = doc.data().members || [];
+    if (!ids.length) { members = []; renderMembers(); return; }
+    const all = [];
+    for (let i = 0; i < ids.length; i += 10) {
+      const batch = ids.slice(i, i + 10);
+      const s = await db.collection('users').where(firebase.firestore.FieldPath.documentId(), 'in', batch).get();
+      s.docs.forEach(d => all.push({ id: d.id, ...d.data() }));
     }
-    // Batch fetch users (firestore 'in' max 30)
-    const batches = [];
-    for (let i = 0; i < memberIds.length; i += 10) {
-      batches.push(memberIds.slice(i, i + 10));
-    }
-    const allMembers = [];
-    for (const batch of batches) {
-      const snap = await db.collection('users').where(firebase.firestore.FieldPath.documentId(), 'in', batch).get();
-      snap.docs.forEach(d => allMembers.push({ id: d.id, ...d.data() }));
-    }
-    members = allMembers;
+    members = all;
     renderMembers();
   });
 }
 
 function renderMembers() {
   membersSidebar.innerHTML = '';
-  const online = members.filter(m => m.status === 'online');
-  const offline = members.filter(m => m.status !== 'online');
-
-  if (online.length > 0) {
-    const cat = document.createElement('div');
-    cat.className = 'member-category';
-    cat.textContent = `ONLINE — ${online.length}`;
-    membersSidebar.appendChild(cat);
-    online.forEach(m => membersSidebar.appendChild(createMemberItem(m, 'online')));
+  const on = members.filter(m => m.status === 'online');
+  const off = members.filter(m => m.status !== 'online');
+  if (on.length) {
+    const c = document.createElement('div'); c.className = 'member-category'; c.textContent = `ONLINE — ${on.length}`;
+    membersSidebar.appendChild(c);
+    on.forEach(m => membersSidebar.appendChild(mkMember(m, 'online')));
   }
-
-  if (offline.length > 0) {
-    const cat = document.createElement('div');
-    cat.className = 'member-category';
-    cat.textContent = `OFFLINE — ${offline.length}`;
-    membersSidebar.appendChild(cat);
-    offline.forEach(m => membersSidebar.appendChild(createMemberItem(m, 'offline')));
+  if (off.length) {
+    const c = document.createElement('div'); c.className = 'member-category'; c.textContent = `OFFLINE — ${off.length}`;
+    membersSidebar.appendChild(c);
+    off.forEach(m => membersSidebar.appendChild(mkMember(m, 'offline')));
   }
 }
 
-function createMemberItem(member, status) {
-  const div = document.createElement('div');
-  div.className = 'member-item';
-  const initial = member.username ? member.username[0].toUpperCase() : '?';
-  div.innerHTML = `
-    <div class="member-avatar avatar-color-${member.avatarColor || 0}">
-      ${escapeHtml(initial)}
-      <div class="member-status-dot ${status}"></div>
-    </div>
-    <span class="member-name">${escapeHtml(member.username || 'Unknown')}</span>
-  `;
-  return div;
+function mkMember(m, status) {
+  const d = document.createElement('div'); d.className = 'member-item';
+  d.innerHTML = `<div class="member-avatar avatar-color-${m.avatarColor||0}">${esc((m.username||'?')[0].toUpperCase())}<div class="member-status-dot ${status}"></div></div><span class="member-name">${esc(m.username||'Unknown')}</span>`;
+  return d;
 }
 
-// Toggle members sidebar
 $('toggleMembersBtn').onclick = () => {
   showMembers = !showMembers;
   membersSidebar.classList.toggle('show', showMembers);
   $('toggleMembersBtn').classList.toggle('active', showMembers);
 };
 
-// ==================================================================
-// SERVER CONTEXT MENU
-// ==================================================================
-function showServerContextMenu(e, server) {
+// ===== CONTEXT MENU =====
+function showCtxMenu(e, server) {
   e.preventDefault();
-  const isOwner = server.ownerId === currentUser.uid;
-  $('ctxDeleteServer').style.display = isOwner ? 'flex' : 'none';
-  $('ctxLeaveServer').style.display = isOwner ? 'none' : 'flex';
-
+  const own = server.ownerId === currentUser.uid;
+  $('ctxDeleteServer').style.display = own ? 'flex' : 'none';
+  $('ctxLeaveServer').style.display = own ? 'none' : 'flex';
   serverContextMenu.style.display = 'block';
   serverContextMenu.style.left = e.clientX + 'px';
   serverContextMenu.style.top = e.clientY + 'px';
   serverContextMenu.dataset.serverId = server.id;
-
-  // Make sure menu stays in viewport
-  const rect = serverContextMenu.getBoundingClientRect();
-  if (rect.right > window.innerWidth) serverContextMenu.style.left = (window.innerWidth - rect.width - 5) + 'px';
-  if (rect.bottom > window.innerHeight) serverContextMenu.style.top = (window.innerHeight - rect.height - 5) + 'px';
+  const r = serverContextMenu.getBoundingClientRect();
+  if (r.right > innerWidth) serverContextMenu.style.left = (innerWidth - r.width - 5) + 'px';
+  if (r.bottom > innerHeight) serverContextMenu.style.top = (innerHeight - r.height - 5) + 'px';
 }
 
-document.addEventListener('click', () => {
-  serverContextMenu.style.display = 'none';
-});
+document.addEventListener('click', () => serverContextMenu.style.display = 'none');
 
 $('ctxInvite').onclick = () => {
-  const server = servers.find(s => s.id === serverContextMenu.dataset.serverId);
-  if (server) {
-    $('inviteCodeText').textContent = server.inviteCode;
-    $('inviteModal').classList.add('show');
-  }
+  const s = servers.find(x => x.id === serverContextMenu.dataset.serverId);
+  if (s) { $('inviteCodeText').textContent = s.inviteCode; $('inviteModal').classList.add('show'); }
 };
 
 $('copyInviteBtn').onclick = () => {
@@ -2366,132 +1995,76 @@ $('ctxCreateChannel').onclick = () => {
 };
 
 $('ctxLeaveServer').onclick = async () => {
-  const serverId = serverContextMenu.dataset.serverId;
-  const server = servers.find(s => s.id === serverId);
-  if (!confirm(`Leave "${server?.name || 'server'}"?`)) return;
+  const sid = serverContextMenu.dataset.serverId;
+  const s = servers.find(x => x.id === sid);
+  if (!confirm(`Leave "${s?.name}"?`)) return;
   try {
-    await db.collection('servers').doc(serverId).update({
-      members: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-    });
-    await db.collection('users').doc(currentUser.uid).update({
-      servers: firebase.firestore.FieldValue.arrayRemove(serverId)
-    });
-    if (currentServerId === serverId) goHome();
-  } catch (e) {
-    console.error(e);
-  }
+    await db.collection('servers').doc(sid).update({ members: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
+    await db.collection('users').doc(currentUser.uid).update({ servers: firebase.firestore.FieldValue.arrayRemove(sid) });
+    if (currentServerId === sid) goHome();
+  } catch (e) { console.error(e); }
 };
 
 $('ctxDeleteServer').onclick = async () => {
-  const serverId = serverContextMenu.dataset.serverId;
-  const server = servers.find(s => s.id === serverId);
-  if (!confirm(`Permanently delete "${server?.name || 'server'}"? This cannot be undone.`)) return;
+  const sid = serverContextMenu.dataset.serverId;
+  const s = servers.find(x => x.id === sid);
+  if (!confirm(`Permanently delete "${s?.name}"? This cannot be undone.`)) return;
   try {
-    // Remove server from all members
-    const serverDoc = await db.collection('servers').doc(serverId).get();
-    const memberIds = serverDoc.data().members || [];
-    for (const uid of memberIds) {
-      await db.collection('users').doc(uid).update({
-        servers: firebase.firestore.FieldValue.arrayRemove(serverId)
-      });
-    }
-    // Delete channels and their messages
-    const channelsSnap = await db.collection('servers').doc(serverId).collection('channels').get();
-    for (const ch of channelsSnap.docs) {
-      const msgsSnap = await db.collection('servers').doc(serverId).collection('channels').doc(ch.id).collection('messages').get();
-      for (const msg of msgsSnap.docs) await msg.ref.delete();
+    const sdoc = await db.collection('servers').doc(sid).get();
+    const mids = sdoc.data().members || [];
+    for (const uid of mids) await db.collection('users').doc(uid).update({ servers: firebase.firestore.FieldValue.arrayRemove(sid) });
+    const csnap = await db.collection('servers').doc(sid).collection('channels').get();
+    for (const ch of csnap.docs) {
+      const msnap = await db.collection('servers').doc(sid).collection('channels').doc(ch.id).collection('messages').get();
+      for (const m of msnap.docs) await m.ref.delete();
+      const tsnap = await db.collection('servers').doc(sid).collection('channels').doc(ch.id).collection('typing').get();
+      for (const t of tsnap.docs) await t.ref.delete();
       await ch.ref.delete();
     }
-    // Delete server
-    await db.collection('servers').doc(serverId).delete();
-    if (currentServerId === serverId) goHome();
-  } catch (e) {
-    console.error(e);
-  }
+    await db.collection('servers').doc(sid).delete();
+    if (currentServerId === sid) goHome();
+  } catch (e) { console.error(e); }
 };
 
-// Server header context menu (same as right-clicking server icon)
 $('serverHeader').onclick = e => {
   if (!currentServerId) return;
-  const server = servers.find(s => s.id === currentServerId);
-  if (server) showServerContextMenu(e, server);
+  const s = servers.find(x => x.id === currentServerId);
+  if (s) showCtxMenu(e, s);
 };
 
-// ==================================================================
-// FRIENDS (Placeholder UI)
-// ==================================================================
-function renderFriends() {
-  $('friendsContent').innerHTML = `
-    <div class="no-friends-msg">
-      <p style="font-size:16px; margin-bottom:8px;">😊</p>
-      <p>No friends to show yet. Join a server and start chatting!</p>
-    </div>
-  `;
-}
-
-// ==================================================================
-// SETTINGS
-// ==================================================================
-$('settingsBtn').onclick = () => {
-  $('settingsOverlay').classList.add('show');
-  $('editDisplayName').value = userProfile.username;
-};
-
+// ===== SETTINGS =====
+$('settingsBtn').onclick = () => { $('settingsOverlay').classList.add('show'); $('editDisplayName').value = userProfile.username; };
 $('closeSettings').onclick = () => $('settingsOverlay').classList.remove('show');
 
 $('saveProfileBtn').onclick = async () => {
-  const newName = $('editDisplayName').value.trim();
-  if (!newName) return;
+  const name = $('editDisplayName').value.trim();
+  if (!name) return;
   try {
-    await db.collection('users').doc(currentUser.uid).update({ username: newName });
-    userProfile.username = newName;
+    await db.collection('users').doc(currentUser.uid).update({ username: name });
+    userProfile.username = name;
     updateUserPanel();
     $('settingsOverlay').classList.remove('show');
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) { console.error(e); }
 };
 
 $('logoutBtnSettings').onclick = async () => {
   $('settingsOverlay').classList.remove('show');
-  try {
-    await db.collection('users').doc(currentUser.uid).update({ status: 'offline' });
-  } catch (e) {}
+  try { await db.collection('users').doc(currentUser.uid).update({ status: 'offline' }); } catch(e){}
   auth.signOut();
 };
 
-// ==================================================================
-// UTILITIES
-// ==================================================================
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+// ===== UTILS =====
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function fmtTime(d) { return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+function fmtDate(d) {
+  const today = new Date(), y = new Date(today); y.setDate(y.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return 'Today at';
+  if (d.toDateString() === y.toDateString()) return 'Yesterday at';
+  return d.toLocaleDateString() + ' at';
 }
 
-function formatTime(date) {
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function formatDate(date) {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (date.toDateString() === today.toDateString()) return 'Today at';
-  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday at';
-  return date.toLocaleDateString() + ' at';
-}
-
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('show');
-  });
-});
-
-// Escape key to close modals
+// Close modals
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
@@ -2499,23 +2072,15 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Handle page visibility for online status
+// Online/offline status
 document.addEventListener('visibilitychange', () => {
   if (!currentUser) return;
-  if (document.hidden) {
-    db.collection('users').doc(currentUser.uid).update({ status: 'idle' }).catch(() => {});
-  } else {
-    db.collection('users').doc(currentUser.uid).update({ status: 'online' }).catch(() => {});
-  }
+  db.collection('users').doc(currentUser.uid).update({ status: document.hidden ? 'idle' : 'online' }).catch(()=>{});
 });
 
-// Before unload - set offline
 window.addEventListener('beforeunload', () => {
-  if (currentUser) {
-    navigator.sendBeacon && db.collection('users').doc(currentUser.uid).update({ status: 'offline' }).catch(() => {});
-  }
+  if (currentUser) db.collection('users').doc(currentUser.uid).update({ status: 'offline' }).catch(()=>{});
 });
-
 </script>
 </body>
 </html>
