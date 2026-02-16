@@ -8,6 +8,17 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #000;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
 :root {
   --bg-primary: #000000;
   --bg-secondary: #0a0a0a;
@@ -21,23 +32,13 @@
   --text-muted: #666666;
   --border: #222222;
   --accent: #ffffff;
-  --accent-dim: rgba(255,255,255,0.1);
   --danger: #ff453a;
   --success: #30d158;
   --online: #30d158;
   --scrollbar: #333333;
-  --message-hover: rgba(255,255,255,0.02);
-}
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  height: 100vh;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* AUTH SCREENS */
+/* ============ AUTH ============ */
 .auth-container {
   display: flex;
   align-items: center;
@@ -138,17 +139,18 @@ body {
   font-weight: 500;
 }
 
-/* MAIN APP LAYOUT */
+/* ============ MAIN LAYOUT ============ */
 .app-container {
   display: none;
   height: 100vh;
-  flex-direction: row;
+  width: 100vw;
+  overflow: hidden;
 }
 .app-container.active {
   display: flex;
 }
 
-/* SERVER LIST */
+/* ============ SERVER LIST ============ */
 .server-list {
   width: 72px;
   min-width: 72px;
@@ -160,6 +162,7 @@ body {
   gap: 4px;
   overflow-y: auto;
   border-right: 1px solid var(--border);
+  flex-shrink: 0;
 }
 .server-list::-webkit-scrollbar { width: 0; }
 .server-icon {
@@ -224,8 +227,19 @@ body {
   color: var(--accent);
   background: transparent;
 }
+.server-icon.join-server {
+  background: transparent;
+  border: 1px dashed var(--text-muted);
+  color: var(--text-muted);
+  font-size: 16px;
+}
+.server-icon.join-server:hover {
+  border-color: var(--success);
+  color: var(--success);
+  background: transparent;
+}
 
-/* CHANNEL / DM SIDEBAR */
+/* ============ SIDEBAR ============ */
 .sidebar {
   width: 260px;
   min-width: 260px;
@@ -233,6 +247,9 @@ body {
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
 }
 .sidebar-header {
   padding: 16px 16px;
@@ -243,6 +260,7 @@ body {
   align-items: center;
   justify-content: space-between;
   min-height: 52px;
+  flex-shrink: 0;
 }
 .sidebar-header .actions {
   display: flex;
@@ -266,6 +284,7 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 8px;
+  min-height: 0;
 }
 .sidebar-content::-webkit-scrollbar { width: 4px; }
 .sidebar-content::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
@@ -352,16 +371,12 @@ body {
 .dm-item .dm-status {
   font-size: 11px;
   color: var(--text-muted);
-}
-.dm-item .online-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--online);
-  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* USER PANEL */
+/* ============ USER PANEL ============ */
 .user-panel {
   padding: 12px;
   border-top: 1px solid var(--border);
@@ -369,6 +384,7 @@ body {
   align-items: center;
   gap: 10px;
   background: var(--bg-secondary);
+  flex-shrink: 0;
 }
 .user-panel .user-avatar {
   width: 36px;
@@ -422,21 +438,26 @@ body {
   color: var(--text-primary);
 }
 
-/* MAIN CHAT AREA */
+/* ============ CHAT AREA - THE KEY FIX ============ */
 .chat-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);
   min-width: 0;
+  height: 100vh;
+  overflow: hidden;
 }
+
 .chat-header {
   padding: 12px 20px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 12px;
+  height: 52px;
   min-height: 52px;
+  flex-shrink: 0;
   background: var(--bg-primary);
 }
 .chat-header .ch-icon {
@@ -474,21 +495,39 @@ body {
   color: var(--text-primary);
 }
 
-/* MESSAGES */
+/* THIS IS THE CRITICAL PART */
+.chat-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .messages-container {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
+  min-height: 0;
 }
 .messages-container::-webkit-scrollbar { width: 6px; }
 .messages-container::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 6px; }
 .messages-list {
   display: flex;
   flex-direction: column;
-  margin-top: auto;
+  justify-content: flex-end;
+  min-height: 100%;
 }
+
+/* Messages */
 .message {
   display: flex;
   gap: 14px;
@@ -498,7 +537,7 @@ body {
   margin: 1px 0;
 }
 .message:hover {
-  background: var(--message-hover);
+  background: rgba(255,255,255,0.02);
 }
 .message.grouped {
   padding-top: 2px;
@@ -522,14 +561,6 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.message.grouped .msg-avatar {
-  visibility: hidden;
-  width: 40px;
-}
-.message.grouped .msg-avatar-placeholder {
-  width: 40px;
-  flex-shrink: 0;
 }
 .message .msg-content {
   flex: 1;
@@ -558,14 +589,7 @@ body {
   line-height: 1.5;
   color: var(--text-secondary);
   word-wrap: break-word;
-}
-.message .msg-text img {
-  max-width: 400px;
-  max-height: 300px;
-  border-radius: 12px;
-  margin-top: 8px;
-  display: block;
-  cursor: pointer;
+  overflow-wrap: break-word;
 }
 .message .msg-image {
   max-width: 400px;
@@ -573,9 +597,13 @@ body {
   border-radius: 12px;
   margin-top: 8px;
   cursor: pointer;
+  display: block;
 }
 .message.grouped .msg-header {
   display: none;
+}
+.message.grouped .msg-avatar {
+  visibility: hidden;
 }
 .msg-hover-time {
   font-size: 10px;
@@ -583,7 +611,8 @@ body {
   opacity: 0;
   min-width: 40px;
   text-align: center;
-  line-height: 40px;
+  line-height: 20px;
+  flex-shrink: 0;
 }
 .message.grouped:hover .msg-hover-time {
   opacity: 1;
@@ -602,9 +631,11 @@ body {
   font-size: 14px;
 }
 
-/* MESSAGE INPUT */
+/* ============ MESSAGE INPUT ============ */
 .message-input-container {
   padding: 0 20px 20px;
+  flex-shrink: 0;
+  position: relative;
 }
 .message-input-wrapper {
   background: var(--bg-tertiary);
@@ -669,7 +700,181 @@ body {
   color: #000;
 }
 
-/* MODAL */
+/* Upload preview */
+.upload-preview {
+  display: none;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+}
+.upload-preview.active {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.upload-preview img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.upload-preview .upload-info {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.upload-preview .remove-upload {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+.upload-preview.active + .message-input-wrapper {
+  border-radius: 0 0 14px 14px;
+  border-top: none;
+}
+
+/* Typing indicator */
+.typing-indicator {
+  padding: 2px 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ============ GIF PICKER ============ */
+.gif-picker {
+  display: none;
+  position: absolute;
+  bottom: 70px;
+  left: 0;
+  width: 420px;
+  height: 460px;
+  background: var(--bg-modal);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  z-index: 500;
+  flex-direction: column;
+  overflow: hidden;
+}
+.gif-picker.active {
+  display: flex;
+}
+.gif-picker-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.gif-picker-header input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.gif-picker-header input:focus {
+  border-color: var(--text-muted);
+}
+.gif-grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-content: start;
+  min-height: 0;
+}
+.gif-grid::-webkit-scrollbar { width: 4px; }
+.gif-grid::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
+.gif-grid img {
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  display: block;
+}
+.gif-grid img:hover {
+  transform: scale(0.97);
+}
+.gif-grid .gif-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ============ MEMBERS SIDEBAR ============ */
+.members-sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  padding: 16px 8px;
+  overflow-y: auto;
+  display: none;
+  flex-shrink: 0;
+}
+.members-sidebar.active {
+  display: block;
+}
+.members-sidebar::-webkit-scrollbar { width: 4px; }
+.members-sidebar::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
+.member-category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding: 16px 8px 4px;
+}
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.member-item:hover {
+  background: var(--bg-hover);
+}
+.member-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.member-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.member-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ============ MODALS ============ */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -725,71 +930,31 @@ body {
   color: var(--text-primary);
 }
 
-/* GIF PICKER */
-.gif-picker {
-  display: none;
-  position: absolute;
-  bottom: 70px;
-  left: 20px;
-  width: 420px;
-  height: 460px;
-  background: var(--bg-modal);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  z-index: 500;
-  flex-direction: column;
-  overflow: hidden;
-}
-.gif-picker.active {
-  display: flex;
-}
-.gif-picker-header {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.gif-picker-header input {
-  width: 100%;
-  padding: 10px 14px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text-primary);
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-}
-.gif-picker-header input:focus {
-  border-color: var(--text-muted);
-}
-.gif-grid {
+/* ============ MISC ============ */
+.empty-state {
   flex: 1;
-  overflow-y: auto;
-  padding: 8px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  align-content: start;
-}
-.gif-grid::-webkit-scrollbar { width: 4px; }
-.gif-grid::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
-.gif-grid img {
-  width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.1s;
-}
-.gif-grid img:hover {
-  transform: scale(0.97);
-}
-.gif-grid .gif-loading {
-  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
   text-align: center;
   padding: 40px;
-  color: var(--text-muted);
-  font-size: 13px;
 }
-
-/* IMAGE PREVIEW */
+.empty-state i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+.empty-state h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+.empty-state p {
+  font-size: 13px;
+  max-width: 300px;
+}
 .image-preview {
   display: none;
   position: fixed;
@@ -808,8 +973,6 @@ body {
   max-height: 90vh;
   border-radius: 8px;
 }
-
-/* PFP Upload */
 .pfp-upload-area {
   width: 100px;
   height: 100px;
@@ -846,107 +1009,6 @@ body {
 .pfp-upload-area:hover .pfp-overlay {
   opacity: 1;
 }
-
-/* MEMBERS SIDEBAR */
-.members-sidebar {
-  width: 240px;
-  min-width: 240px;
-  background: var(--bg-secondary);
-  border-left: 1px solid var(--border);
-  padding: 16px 8px;
-  overflow-y: auto;
-  display: none;
-}
-.members-sidebar.active {
-  display: block;
-}
-.members-sidebar::-webkit-scrollbar { width: 4px; }
-.members-sidebar::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
-.member-category {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  padding: 16px 8px 4px;
-}
-.member-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.member-item:hover {
-  background: var(--bg-hover);
-}
-.member-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--bg-active);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-}
-.member-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.member-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-/* Image upload preview in input */
-.upload-preview {
-  display: none;
-  padding: 8px 12px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  border-bottom: none;
-  border-radius: 14px 14px 0 0;
-  margin: 0;
-}
-.upload-preview.active {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.upload-preview img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-.upload-preview .upload-info {
-  flex: 1;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-.upload-preview .remove-upload {
-  background: none;
-  border: none;
-  color: var(--danger);
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
-}
-.upload-preview.active + .message-input-wrapper {
-  border-radius: 0 0 14px 14px;
-  border-top: none;
-}
-
-/* Server icon upload */
 .server-icon-upload {
   width: 80px;
   height: 80px;
@@ -971,8 +1033,56 @@ body {
   height: 100%;
   object-fit: cover;
 }
-
-/* Context Menu */
+.invite-code {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-family: 'SF Mono', 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0;
+}
+.invite-code button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.dm-search {
+  padding: 8px;
+  flex-shrink: 0;
+}
+.dm-search input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.dm-search input:focus {
+  border-color: var(--text-muted);
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding: 12px 12px 4px;
+}
 .context-menu {
   display: none;
   position: fixed;
@@ -1007,118 +1117,6 @@ body {
 .context-menu-item.danger:hover {
   background: rgba(255,69,58,0.1);
 }
-
-/* Empty state */
-.empty-state {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  text-align: center;
-  padding: 40px;
-}
-.empty-state i {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.3;
-}
-.empty-state h3 {
-  font-size: 18px;
-  margin-bottom: 8px;
-  color: var(--text-secondary);
-}
-.empty-state p {
-  font-size: 13px;
-  max-width: 300px;
-}
-
-/* Typing indicator */
-.typing-indicator {
-  padding: 4px 20px 0;
-  font-size: 12px;
-  color: var(--text-muted);
-  min-height: 20px;
-}
-.typing-indicator span {
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-/* Notification badge */
-.notif-badge {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  background: var(--danger);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--bg-primary);
-}
-
-/* Invite modal */
-.invite-code {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-family: 'SF Mono', monospace;
-  font-size: 14px;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 12px 0;
-}
-.invite-code button {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-/* Search bar in DMs */
-.dm-search {
-  padding: 8px;
-}
-.dm-search input {
-  width: 100%;
-  padding: 8px 12px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-}
-.dm-search input:focus {
-  border-color: var(--text-muted);
-}
-
-.section-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  padding: 12px 12px 4px;
-}
-
-/* Settings */
 .settings-section {
   margin-bottom: 24px;
 }
@@ -1156,11 +1154,20 @@ body {
 .btn-danger {
   background: var(--danger);
   color: #fff;
+  width: auto;
+  padding: 8px 16px;
+  font-size: 13px;
 }
 .btn-sm {
   width: auto;
   padding: 8px 16px;
   font-size: 13px;
+}
+
+#activeChat {
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 </style>
 </head>
@@ -1225,12 +1232,14 @@ body {
     <div class="server-icon add-server" onclick="openModal('createServerModal')" title="Create Server">
       <i class="fas fa-plus"></i>
     </div>
+    <div class="server-icon join-server" onclick="openModal('joinServerModal')" title="Join Server">
+      <i class="fas fa-arrow-right-to-bracket"></i>
+    </div>
   </div>
 
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
-    <!-- DM SIDEBAR (default) -->
-    <div id="dmSidebar">
+    <div id="dmSidebar" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
       <div class="sidebar-header">
         <span>Messages</span>
         <div class="actions">
@@ -1240,12 +1249,9 @@ body {
       <div class="dm-search">
         <input type="text" placeholder="Search conversations..." id="dmSearchInput" oninput="filterDMs()">
       </div>
-      <div class="sidebar-content" id="dmList">
-      </div>
+      <div class="sidebar-content" id="dmList"></div>
     </div>
-
-    <!-- SERVER SIDEBAR -->
-    <div id="serverSidebar" style="display:none">
+    <div id="serverSidebar" style="display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
       <div class="sidebar-header">
         <span id="serverNameDisplay">Server</span>
         <div class="actions">
@@ -1253,11 +1259,8 @@ body {
           <button onclick="openModal('inviteModal')" title="Invite"><i class="fas fa-user-plus"></i></button>
         </div>
       </div>
-      <div class="sidebar-content" id="channelList">
-      </div>
+      <div class="sidebar-content" id="channelList"></div>
     </div>
-
-    <!-- USER PANEL -->
     <div class="user-panel">
       <div class="user-avatar" id="userPanelAvatar" onclick="openModal('profileModal')">
         <span id="userAvatarLetter"></span>
@@ -1275,30 +1278,28 @@ body {
 
   <!-- CHAT AREA -->
   <div class="chat-area" id="chatArea">
-    <!-- No channel selected state -->
     <div class="empty-state" id="emptyState">
       <i class="fas fa-comment-dots"></i>
       <h3>Welcome to Chat</h3>
       <p>Select a conversation or server to start messaging</p>
     </div>
 
-    <!-- Active chat -->
-    <div id="activeChat" style="display:none">
+    <div id="activeChat" style="display:none;flex:1;">
       <div class="chat-header">
         <span class="ch-icon" id="chatIcon"><i class="fas fa-hashtag"></i></span>
         <span class="ch-name" id="chatName">general</span>
-        <span class="ch-topic" id="chatTopic"></span>
+        <span class="ch-topic" id="chatTopic" style="display:none"></span>
         <div class="header-actions">
           <button onclick="toggleMembers()" title="Members" id="membersToggle"><i class="fas fa-users"></i></button>
         </div>
       </div>
-      <div style="display:flex;flex:1;overflow:hidden;">
-        <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+      <div class="chat-body">
+        <div class="chat-main">
           <div class="messages-container" id="messagesContainer">
             <div class="messages-list" id="messagesList"></div>
           </div>
           <div class="typing-indicator" id="typingIndicator"></div>
-          <div class="message-input-container" style="position:relative;">
+          <div class="message-input-container">
             <div class="upload-preview" id="uploadPreview">
               <img id="uploadPreviewImg" src="">
               <div class="upload-info" id="uploadPreviewName">image.png</div>
@@ -1309,7 +1310,7 @@ body {
                 <button onclick="triggerImageUpload()" title="Upload Image"><i class="fas fa-plus-circle"></i></button>
                 <button onclick="toggleGifPicker()" title="GIFs"><i class="fas fa-icons"></i></button>
               </div>
-              <textarea class="message-input" id="messageInput" placeholder="Message #general" rows="1" onkeydown="handleKeyDown(event)" oninput="autoResize(this); handleTyping()"></textarea>
+              <textarea class="message-input" id="messageInput" placeholder="Message #general" rows="1" onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
               <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
             </div>
             <input type="file" id="imageUploadInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
@@ -1333,8 +1334,6 @@ body {
 </div>
 
 <!-- MODALS -->
-
-<!-- Create Server -->
 <div class="modal-overlay" id="createServerModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('createServerModal')"><i class="fas fa-xmark"></i></button>
@@ -1352,7 +1351,6 @@ body {
   </div>
 </div>
 
-<!-- Join Server -->
 <div class="modal-overlay" id="joinServerModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('joinServerModal')"><i class="fas fa-xmark"></i></button>
@@ -1366,7 +1364,6 @@ body {
   </div>
 </div>
 
-<!-- Invite Modal -->
 <div class="modal-overlay" id="inviteModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('inviteModal')"><i class="fas fa-xmark"></i></button>
@@ -1379,7 +1376,6 @@ body {
   </div>
 </div>
 
-<!-- New DM -->
 <div class="modal-overlay" id="newDmModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('newDmModal')"><i class="fas fa-xmark"></i></button>
@@ -1393,7 +1389,6 @@ body {
   </div>
 </div>
 
-<!-- Create Channel -->
 <div class="modal-overlay" id="createChannelModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('createChannelModal')"><i class="fas fa-xmark"></i></button>
@@ -1407,7 +1402,6 @@ body {
   </div>
 </div>
 
-<!-- Profile Modal -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('profileModal')"><i class="fas fa-xmark"></i></button>
@@ -1426,7 +1420,6 @@ body {
   </div>
 </div>
 
-<!-- Settings Modal -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('settingsModal')"><i class="fas fa-xmark"></i></button>
@@ -1448,12 +1441,11 @@ body {
     </div>
     <div class="settings-section danger-zone">
       <h3>Danger Zone</h3>
-      <button class="btn btn-danger btn-sm" onclick="logout()">Log Out</button>
+      <button class="btn btn-danger" onclick="logout()">Log Out</button>
     </div>
   </div>
 </div>
 
-<!-- Server Settings Modal -->
 <div class="modal-overlay" id="serverSettingsModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('serverSettingsModal')"><i class="fas fa-xmark"></i></button>
@@ -1465,28 +1457,26 @@ body {
     <button class="btn btn-primary" onclick="saveServerSettings()" style="margin-bottom:16px">Save</button>
     <div class="settings-section danger-zone" style="margin-top:12px">
       <h3>Danger Zone</h3>
-      <button class="btn btn-danger btn-sm" onclick="leaveServer()">Leave Server</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteServer()" id="deleteServerBtn" style="margin-left:8px;display:none">Delete Server</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-danger" onclick="leaveServer()">Leave Server</button>
+        <button class="btn btn-danger" onclick="deleteServer()" id="deleteServerBtn" style="display:none">Delete Server</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Image Preview -->
 <div class="image-preview" id="imagePreview" onclick="this.classList.remove('active')">
   <img id="imagePreviewImg" src="">
 </div>
 
-<!-- Context Menu -->
-<div class="context-menu" id="contextMenu">
-</div>
+<div class="context-menu" id="contextMenu"></div>
 
-<!-- Firebase SDKs -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// ==================== FIREBASE INIT ====================
 const firebaseConfig = {
   apiKey: "AIzaSyBJMIUucxOusoVzs4lc-QurCxjlW6Hlsuw",
   authDomain: "chat-5f0bf.firebaseapp.com",
@@ -1499,22 +1489,22 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ==================== STATE ====================
+// ========== STATE ==========
 let currentUser = null;
 let currentUserData = null;
-let currentView = 'home'; // 'home' or 'server'
+let currentView = 'home';
 let currentServerId = null;
 let currentChannelId = null;
 let currentDmId = null;
-let currentChatType = null; // 'channel' or 'dm'
+let currentChatType = null;
 let messageUnsub = null;
-let typingTimeout = null;
+let channelUnsub = null;
 let gifSearchTimeout = null;
 let pendingImageData = null;
 let serverIconData = null;
 let usersCache = {};
 
-// ==================== AUTH ====================
+// ========== AUTH ==========
 function showLogin() {
   document.getElementById('loginPage').style.display = 'flex';
   document.getElementById('registerPage').style.display = 'none';
@@ -1528,9 +1518,8 @@ async function login() {
   const email = document.getElementById('loginEmail').value.trim();
   const pw = document.getElementById('loginPassword').value;
   if (!email || !pw) return alert('Please fill in all fields.');
-  try {
-    await auth.signInWithEmailAndPassword(email, pw);
-  } catch(e) { alert(e.message); }
+  try { await auth.signInWithEmailAndPassword(email, pw); }
+  catch(e) { alert(e.message); }
 }
 
 async function register() {
@@ -1541,9 +1530,7 @@ async function register() {
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pw);
     await db.collection('users').doc(cred.user.uid).set({
-      displayName: name,
-      email: email,
-      photoURL: '',
+      displayName: name, email, photoURL: '',
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       status: 'online'
     });
@@ -1551,13 +1538,11 @@ async function register() {
 }
 
 function logout() {
-  if (currentUser) {
-    db.collection('users').doc(currentUser.uid).update({ status: 'offline' });
-  }
+  if (currentUser) db.collection('users').doc(currentUser.uid).update({ status: 'offline' });
   auth.signOut();
 }
 
-auth.onAuthStateChanged(async (user) => {
+auth.onAuthStateChanged(async user => {
   if (user) {
     currentUser = user;
     document.getElementById('loginPage').style.display = 'none';
@@ -1573,15 +1558,13 @@ auth.onAuthStateChanged(async (user) => {
     document.getElementById('appContainer').classList.remove('active');
     document.getElementById('loginPage').style.display = 'flex';
     if (messageUnsub) messageUnsub();
+    if (channelUnsub) channelUnsub();
   }
 });
 
 async function loadUserData() {
   const doc = await db.collection('users').doc(currentUser.uid).get();
-  if (doc.exists) {
-    currentUserData = doc.data();
-    updateUserPanel();
-  }
+  if (doc.exists) { currentUserData = doc.data(); updateUserPanel(); }
 }
 
 function updateUserPanel() {
@@ -1589,35 +1572,31 @@ function updateUserPanel() {
   const name = currentUserData.displayName || 'User';
   document.getElementById('userPanelName').textContent = name;
   document.getElementById('userPanelTag').textContent = 'Online';
-  const avatarEl = document.getElementById('userPanelAvatar');
-  if (currentUserData.photoURL) {
-    avatarEl.innerHTML = `<img src="${currentUserData.photoURL}">`;
-  } else {
-    avatarEl.innerHTML = `<span>${name.charAt(0).toUpperCase()}</span>`;
-  }
+  const el = document.getElementById('userPanelAvatar');
+  el.innerHTML = currentUserData.photoURL
+    ? `<img src="${currentUserData.photoURL}">`
+    : `<span>${name.charAt(0).toUpperCase()}</span>`;
   document.getElementById('settingsEmail').textContent = currentUserData.email || '';
   document.getElementById('settingsUid').textContent = currentUser.uid;
 }
 
-// ==================== USER CACHE ====================
+// ========== USER CACHE ==========
 async function getUser(uid) {
   if (usersCache[uid]) return usersCache[uid];
-  const doc = await db.collection('users').doc(uid).get();
-  if (doc.exists) {
-    usersCache[uid] = doc.data();
-    return doc.data();
-  }
+  try {
+    const doc = await db.collection('users').doc(uid).get();
+    if (doc.exists) { usersCache[uid] = doc.data(); return doc.data(); }
+  } catch(e) {}
   return { displayName: 'Unknown', photoURL: '' };
 }
 
 async function getUserByEmail(email) {
   const snap = await db.collection('users').where('email', '==', email).limit(1).get();
   if (snap.empty) return null;
-  const doc = snap.docs[0];
-  return { uid: doc.id, ...doc.data() };
+  return { uid: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
-// ==================== SERVERS ====================
+// ========== SERVERS ==========
 function loadServers() {
   db.collection('servers').where('members', 'array-contains', currentUser.uid)
     .onSnapshot(snap => {
@@ -1626,25 +1605,16 @@ function loadServers() {
       snap.forEach(doc => {
         const data = doc.data();
         const div = document.createElement('div');
-        div.className = `server-icon ${currentServerId === doc.id ? 'active' : ''}`;
+        div.className = `server-icon${currentServerId === doc.id ? ' active' : ''}`;
         div.title = data.name;
+        div.dataset.id = doc.id;
         div.onclick = () => selectServer(doc.id);
-        div.oncontextmenu = (e) => showServerContext(e, doc.id, data);
-        if (data.iconURL) {
-          div.innerHTML = `<img src="${data.iconURL}">`;
-        } else {
-          div.textContent = data.name ? data.name.charAt(0).toUpperCase() : 'S';
-        }
+        div.oncontextmenu = e => showServerContext(e, doc.id, data);
+        div.innerHTML = data.iconURL
+          ? `<img src="${data.iconURL}">`
+          : (data.name ? data.name.charAt(0).toUpperCase() : 'S');
         container.appendChild(div);
       });
-      // Add join server button after servers
-      const joinDiv = document.createElement('div');
-      joinDiv.className = 'server-icon add-server';
-      joinDiv.title = 'Join Server';
-      joinDiv.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i>';
-      joinDiv.onclick = () => openModal('joinServerModal');
-      joinDiv.style.fontSize = '18px';
-      // Already have add button, add join below
     });
 }
 
@@ -1652,19 +1622,13 @@ async function createServer() {
   const name = document.getElementById('createServerName').value.trim();
   if (!name) return alert('Please enter a server name.');
   const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const serverData = {
-    name,
-    iconURL: serverIconData || '',
-    ownerId: currentUser.uid,
-    members: [currentUser.uid],
-    inviteCode,
+  const ref = await db.collection('servers').add({
+    name, iconURL: serverIconData || '', ownerId: currentUser.uid,
+    members: [currentUser.uid], inviteCode,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
-  const ref = await db.collection('servers').add(serverData);
-  // Create default general channel
+  });
   await db.collection('servers').doc(ref.id).collection('channels').add({
-    name: 'general',
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    name: 'general', createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
   closeModal('createServerModal');
   document.getElementById('createServerName').value = '';
@@ -1679,8 +1643,7 @@ async function joinServer() {
   const snap = await db.collection('servers').where('inviteCode', '==', code).limit(1).get();
   if (snap.empty) return alert('Invalid invite code.');
   const doc = snap.docs[0];
-  const data = doc.data();
-  if (data.members.includes(currentUser.uid)) {
+  if (doc.data().members.includes(currentUser.uid)) {
     closeModal('joinServerModal');
     selectServer(doc.id);
     return;
@@ -1700,41 +1663,25 @@ async function selectServer(serverId) {
   currentChatType = null;
   currentChannelId = null;
 
-  // Update server icon active states
+  // Update icons
   document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.server-icon.home-btn').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('#serverIcons .server-icon').forEach(el => {
-    if (el.title) {
-      // We'll use data attribute approach instead
-    }
-  });
+  document.querySelectorAll(`[data-id="${serverId}"]`).forEach(el => el.classList.add('active'));
 
-  // Show server sidebar
   document.getElementById('dmSidebar').style.display = 'none';
-  document.getElementById('serverSidebar').style.display = '';
+  const ss = document.getElementById('serverSidebar');
+  ss.style.display = 'flex';
 
   const doc = await db.collection('servers').doc(serverId).get();
   if (!doc.exists) return;
-  const data = doc.data();
-  document.getElementById('serverNameDisplay').textContent = data.name;
+  document.getElementById('serverNameDisplay').textContent = doc.data().name;
 
-  loadChannels(serverId);
   showEmptyState();
-  refreshServerIcons();
-}
-
-function refreshServerIcons() {
-  setTimeout(() => {
-    document.querySelectorAll('#serverIcons .server-icon').forEach(el => el.classList.remove('active'));
-    // Mark current
-    document.querySelectorAll('#serverIcons .server-icon').forEach(el => {
-      // We need to identify which one is current
-    });
-  }, 100);
+  loadChannels(serverId);
 }
 
 function loadChannels(serverId) {
-  db.collection('servers').doc(serverId).collection('channels')
+  if (channelUnsub) channelUnsub();
+  channelUnsub = db.collection('servers').doc(serverId).collection('channels')
     .orderBy('createdAt')
     .onSnapshot(snap => {
       const container = document.getElementById('channelList');
@@ -1744,32 +1691,30 @@ function loadChannels(serverId) {
       cat.innerHTML = `TEXT CHANNELS <button class="add-ch" onclick="openModal('createChannelModal')"><i class="fas fa-plus"></i></button>`;
       container.appendChild(cat);
 
-      let firstChannelId = null;
+      let first = null;
       snap.forEach(doc => {
-        if (!firstChannelId) firstChannelId = doc.id;
+        if (!first) first = doc;
         const data = doc.data();
         const div = document.createElement('div');
-        div.className = `channel-item ${currentChannelId === doc.id ? 'active' : ''}`;
+        div.className = `channel-item${currentChannelId === doc.id ? ' active' : ''}`;
+        div.dataset.id = doc.id;
         div.innerHTML = `<i class="fas fa-hashtag"></i><span>${data.name}</span>`;
         div.onclick = () => selectChannel(doc.id, data.name);
         container.appendChild(div);
       });
 
-      // Auto-select first channel if none selected
-      if (!currentChannelId && firstChannelId) {
-        const firstSnap = snap.docs[0];
-        selectChannel(firstSnap.id, firstSnap.data().name);
+      if (!currentChannelId && first) {
+        selectChannel(first.id, first.data().name);
       }
     });
 }
 
 async function createChannel() {
   if (!currentServerId) return;
-  const name = document.getElementById('createChannelName').value.trim().toLowerCase().replace(/\s+/g, '-');
+  const name = document.getElementById('createChannelName').value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   if (!name) return alert('Enter a channel name.');
   await db.collection('servers').doc(currentServerId).collection('channels').add({
-    name,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    name, createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
   closeModal('createChannelModal');
   document.getElementById('createChannelName').value = '';
@@ -1780,17 +1725,15 @@ function selectChannel(channelId, channelName) {
   currentChatType = 'channel';
   currentDmId = null;
 
-  // Update active states
-  document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('active'));
-  // Find and mark active (will be updated on next snapshot)
+  document.querySelectorAll('.channel-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === channelId);
+  });
 
   document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('activeChat').style.display = 'flex';
-  document.getElementById('activeChat').style.flexDirection = 'column';
-  document.getElementById('activeChat').style.flex = '1';
+  const ac = document.getElementById('activeChat');
+  ac.style.display = 'flex';
   document.getElementById('chatIcon').innerHTML = '<i class="fas fa-hashtag"></i>';
   document.getElementById('chatName').textContent = channelName;
-  document.getElementById('chatTopic').textContent = '';
   document.getElementById('messageInput').placeholder = `Message #${channelName}`;
   document.getElementById('membersToggle').style.display = '';
 
@@ -1798,17 +1741,16 @@ function selectChannel(channelId, channelName) {
   loadMembers();
 }
 
-// ==================== DMS ====================
+// ========== DMS ==========
 function goHome() {
   currentView = 'home';
   currentServerId = null;
   currentChannelId = null;
-  currentChatType = null;
+  if (channelUnsub) { channelUnsub(); channelUnsub = null; }
 
   document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
   document.querySelector('.server-icon.home-btn').classList.add('active');
-
-  document.getElementById('dmSidebar').style.display = '';
+  document.getElementById('dmSidebar').style.display = 'flex';
   document.getElementById('serverSidebar').style.display = 'none';
 
   if (!currentDmId) showEmptyState();
@@ -1817,87 +1759,67 @@ function goHome() {
 function loadDMs() {
   db.collection('dms').where('members', 'array-contains', currentUser.uid)
     .orderBy('lastMessageAt', 'desc')
-    .onSnapshot(async (snap) => {
+    .onSnapshot(async snap => {
       const container = document.getElementById('dmList');
       container.innerHTML = '';
-
       if (snap.empty) {
         container.innerHTML = '<div class="section-label">No conversations yet</div>';
         return;
       }
-
       container.innerHTML = '<div class="section-label">Direct Messages</div>';
-
       for (const doc of snap.docs) {
         const data = doc.data();
         const otherUid = data.members.find(m => m !== currentUser.uid);
         const otherUser = await getUser(otherUid);
-
         const div = document.createElement('div');
-        div.className = `dm-item ${currentDmId === doc.id ? 'active' : ''}`;
+        div.className = `dm-item${currentDmId === doc.id ? ' active' : ''}`;
+        div.dataset.id = doc.id;
         div.onclick = () => selectDM(doc.id, otherUser, otherUid);
-
-        const avatarContent = otherUser.photoURL
+        const avatar = otherUser.photoURL
           ? `<img src="${otherUser.photoURL}">`
           : (otherUser.displayName || 'U').charAt(0).toUpperCase();
-
         div.innerHTML = `
-          <div class="dm-avatar">${avatarContent}</div>
+          <div class="dm-avatar">${avatar}</div>
           <div class="dm-info">
             <div class="dm-name">${otherUser.displayName || 'User'}</div>
             <div class="dm-status">${data.lastMessage ? truncate(data.lastMessage, 30) : 'No messages yet'}</div>
-          </div>
-        `;
+          </div>`;
         container.appendChild(div);
       }
     });
 }
 
-function truncate(str, max) {
-  return str.length > max ? str.substring(0, max) + '...' : str;
-}
+function truncate(s, n) { return s.length > n ? s.substring(0, n) + '…' : s; }
 
 async function createDM() {
   const email = document.getElementById('newDmEmail').value.trim();
   if (!email) return alert('Enter an email address.');
   if (email === currentUserData.email) return alert("You can't message yourself.");
+  const target = await getUserByEmail(email);
+  if (!target) return alert('User not found.');
 
-  const targetUser = await getUserByEmail(email);
-  if (!targetUser) return alert('User not found.');
+  const existing = await db.collection('dms').where('members', 'array-contains', currentUser.uid).get();
+  let existingId = null;
+  existing.forEach(doc => { if (doc.data().members.includes(target.uid)) existingId = doc.id; });
 
-  // Check if DM already exists
-  const existing = await db.collection('dms')
-    .where('members', 'array-contains', currentUser.uid)
-    .get();
-
-  let existingDmId = null;
-  existing.forEach(doc => {
-    const data = doc.data();
-    if (data.members.includes(targetUser.uid)) {
-      existingDmId = doc.id;
-    }
-  });
-
-  if (existingDmId) {
+  if (existingId) {
     closeModal('newDmModal');
     document.getElementById('newDmEmail').value = '';
-    const otherUser = await getUser(targetUser.uid);
     goHome();
-    selectDM(existingDmId, otherUser, targetUser.uid);
+    selectDM(existingId, target, target.uid);
     return;
   }
 
   const ref = await db.collection('dms').add({
-    members: [currentUser.uid, targetUser.uid],
+    members: [currentUser.uid, target.uid],
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     lastMessageAt: firebase.firestore.FieldValue.serverTimestamp(),
     lastMessage: ''
   });
-
   closeModal('newDmModal');
   document.getElementById('newDmEmail').value = '';
   goHome();
-  selectDM(ref.id, targetUser, targetUser.uid);
+  selectDM(ref.id, target, target.uid);
 }
 
 function selectDM(dmId, otherUser, otherUid) {
@@ -1907,19 +1829,18 @@ function selectDM(dmId, otherUser, otherUid) {
   currentServerId = null;
   currentView = 'home';
 
-  document.querySelectorAll('.dm-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.dm-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === dmId);
+  });
   document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
   document.querySelector('.server-icon.home-btn').classList.add('active');
-  document.getElementById('dmSidebar').style.display = '';
+  document.getElementById('dmSidebar').style.display = 'flex';
   document.getElementById('serverSidebar').style.display = 'none';
 
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('activeChat').style.display = 'flex';
-  document.getElementById('activeChat').style.flexDirection = 'column';
-  document.getElementById('activeChat').style.flex = '1';
   document.getElementById('chatIcon').innerHTML = '<i class="fas fa-at"></i>';
   document.getElementById('chatName').textContent = otherUser.displayName || 'User';
-  document.getElementById('chatTopic').textContent = '';
   document.getElementById('messageInput').placeholder = `Message ${otherUser.displayName || 'User'}`;
   document.getElementById('membersToggle').style.display = 'none';
   document.getElementById('membersSidebar').classList.remove('active');
@@ -1935,63 +1856,50 @@ function filterDMs() {
   });
 }
 
-// ==================== MESSAGES ====================
+// ========== MESSAGES ==========
 function loadMessages() {
   if (messageUnsub) messageUnsub();
-
   const container = document.getElementById('messagesList');
   container.innerHTML = '';
 
-  let collectionPath;
+  let ref;
   if (currentChatType === 'channel') {
-    collectionPath = db.collection('servers').doc(currentServerId)
-      .collection('channels').doc(currentChannelId)
-      .collection('messages');
+    ref = db.collection('servers').doc(currentServerId)
+      .collection('channels').doc(currentChannelId).collection('messages');
   } else if (currentChatType === 'dm') {
-    collectionPath = db.collection('dms').doc(currentDmId)
-      .collection('messages');
+    ref = db.collection('dms').doc(currentDmId).collection('messages');
   } else return;
 
-  messageUnsub = collectionPath.orderBy('createdAt').limitToLast(100)
-    .onSnapshot(async (snap) => {
+  messageUnsub = ref.orderBy('createdAt').limitToLast(100)
+    .onSnapshot(async snap => {
       container.innerHTML = '';
 
-      // Welcome message
-      const welcomeDiv = document.createElement('div');
-      welcomeDiv.className = 'welcome-msg';
-      if (currentChatType === 'channel') {
-        welcomeDiv.innerHTML = `<h2>Welcome to #${document.getElementById('chatName').textContent}</h2><p>This is the start of the channel.</p>`;
-      } else {
-        welcomeDiv.innerHTML = `<h2>${document.getElementById('chatName').textContent}</h2><p>This is the beginning of your conversation.</p>`;
-      }
-      container.appendChild(welcomeDiv);
+      const welcome = document.createElement('div');
+      welcome.className = 'welcome-msg';
+      welcome.innerHTML = currentChatType === 'channel'
+        ? `<h2>Welcome to #${document.getElementById('chatName').textContent}</h2><p>This is the start of the channel.</p>`
+        : `<h2>${document.getElementById('chatName').textContent}</h2><p>This is the beginning of your conversation.</p>`;
+      container.appendChild(welcome);
 
-      let lastAuthor = null;
-      let lastTime = null;
+      let lastAuthor = null, lastTime = null;
 
       for (const doc of snap.docs) {
         const data = doc.data();
         const user = await getUser(data.authorId);
         const isGrouped = lastAuthor === data.authorId && lastTime &&
-          data.createdAt && (data.createdAt.toMillis() - lastTime < 300000); // 5 min
+          data.createdAt && (data.createdAt.toMillis() - lastTime < 300000);
 
         const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${isGrouped ? 'grouped' : ''}`;
-        msgDiv.oncontextmenu = (e) => showMessageContext(e, doc.id, data);
+        msgDiv.className = `message${isGrouped ? ' grouped' : ''}`;
+        msgDiv.oncontextmenu = e => showMessageContext(e, doc.id, data);
 
         const time = data.createdAt ? formatTime(data.createdAt.toDate()) : '';
         const fullTime = data.createdAt ? formatFullTime(data.createdAt.toDate()) : '';
 
-        let contentHtml = '';
-        if (data.text) {
-          contentHtml += `<div class="msg-text">${escapeHtml(data.text)}</div>`;
-        }
-        if (data.imageURL) {
-          contentHtml += `<img class="msg-image" src="${data.imageURL}" onclick="previewImage('${data.imageURL}')">`;
-        }
-        if (data.gifURL) {
-          contentHtml += `<img class="msg-image" src="${data.gifURL}" onclick="previewImage('${data.gifURL}')">`;
-        }
+        let content = '';
+        if (data.text) content += `<div class="msg-text">${linkify(escapeHtml(data.text))}</div>`;
+        if (data.imageURL) content += `<img class="msg-image" src="${data.imageURL}" onclick="previewImage('${data.imageURL.replace(/'/g, "\\'")}')">`;
+        if (data.gifURL) content += `<img class="msg-image" src="${data.gifURL}" onclick="previewImage('${data.gifURL.replace(/'/g, "\\'")}')">`;
 
         const avatarContent = user.photoURL
           ? `<img src="${user.photoURL}">`
@@ -2000,8 +1908,7 @@ function loadMessages() {
         if (isGrouped) {
           msgDiv.innerHTML = `
             <div class="msg-hover-time">${time}</div>
-            <div class="msg-content">${contentHtml}</div>
-          `;
+            <div class="msg-content">${content}</div>`;
         } else {
           msgDiv.innerHTML = `
             <div class="msg-avatar">${avatarContent}</div>
@@ -2010,9 +1917,8 @@ function loadMessages() {
                 <span class="msg-author">${escapeHtml(user.displayName || 'Unknown')}</span>
                 <span class="msg-time">${fullTime}</span>
               </div>
-              ${contentHtml}
-            </div>
-          `;
+              ${content}
+            </div>`;
         }
 
         container.appendChild(msgDiv);
@@ -2020,7 +1926,6 @@ function loadMessages() {
         lastTime = data.createdAt ? data.createdAt.toMillis() : null;
       }
 
-      // Scroll to bottom
       const mc = document.getElementById('messagesContainer');
       mc.scrollTop = mc.scrollHeight;
     });
@@ -2029,33 +1934,21 @@ function loadMessages() {
 async function sendMessage() {
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
-
   if (!text && !pendingImageData) return;
 
-  let collectionPath;
+  let ref;
   if (currentChatType === 'channel') {
-    collectionPath = db.collection('servers').doc(currentServerId)
-      .collection('channels').doc(currentChannelId)
-      .collection('messages');
+    ref = db.collection('servers').doc(currentServerId)
+      .collection('channels').doc(currentChannelId).collection('messages');
   } else if (currentChatType === 'dm') {
-    collectionPath = db.collection('dms').doc(currentDmId)
-      .collection('messages');
+    ref = db.collection('dms').doc(currentDmId).collection('messages');
   } else return;
 
-  const msgData = {
-    authorId: currentUser.uid,
-    text: text,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
+  const msg = { authorId: currentUser.uid, text, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+  if (pendingImageData) { msg.imageURL = pendingImageData; removeUpload(); }
 
-  if (pendingImageData) {
-    msgData.imageURL = pendingImageData;
-    removeUpload();
-  }
+  await ref.add(msg);
 
-  await collectionPath.add(msgData);
-
-  // Update DM last message
   if (currentChatType === 'dm') {
     db.collection('dms').doc(currentDmId).update({
       lastMessage: text || '📷 Image',
@@ -2068,38 +1961,27 @@ async function sendMessage() {
 }
 
 function sendGifMessage(gifUrl) {
-  let collectionPath;
+  let ref;
   if (currentChatType === 'channel') {
-    collectionPath = db.collection('servers').doc(currentServerId)
-      .collection('channels').doc(currentChannelId)
-      .collection('messages');
+    ref = db.collection('servers').doc(currentServerId)
+      .collection('channels').doc(currentChannelId).collection('messages');
   } else if (currentChatType === 'dm') {
-    collectionPath = db.collection('dms').doc(currentDmId)
-      .collection('messages');
+    ref = db.collection('dms').doc(currentDmId).collection('messages');
   } else return;
 
-  collectionPath.add({
-    authorId: currentUser.uid,
-    text: '',
-    gifURL: gifUrl,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
+  ref.add({ authorId: currentUser.uid, text: '', gifURL: gifUrl,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp() });
 
   if (currentChatType === 'dm') {
     db.collection('dms').doc(currentDmId).update({
-      lastMessage: 'GIF',
-      lastMessageAt: firebase.firestore.FieldValue.serverTimestamp()
+      lastMessage: 'GIF', lastMessageAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   }
-
   toggleGifPicker();
 }
 
 function handleKeyDown(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
 
 function autoResize(el) {
@@ -2107,34 +1989,23 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 200) + 'px';
 }
 
-// ==================== TYPING INDICATOR ====================
-function handleTyping() {
-  // Simplified - could implement with firebase
-}
-
-// ==================== MEMBERS ====================
+// ========== MEMBERS ==========
 async function loadMembers() {
   if (currentChatType !== 'channel' || !currentServerId) return;
   const doc = await db.collection('servers').doc(currentServerId).get();
   if (!doc.exists) return;
-  const data = doc.data();
-  const members = data.members || [];
-
+  const members = doc.data().members || [];
   document.getElementById('membersCount').textContent = `Members — ${members.length}`;
   const container = document.getElementById('membersList');
   container.innerHTML = '';
-
   for (const uid of members) {
     const user = await getUser(uid);
     const div = document.createElement('div');
     div.className = 'member-item';
-    const avatarContent = user.photoURL
+    const avatar = user.photoURL
       ? `<img src="${user.photoURL}">`
       : (user.displayName || 'U').charAt(0).toUpperCase();
-    div.innerHTML = `
-      <div class="member-avatar">${avatarContent}</div>
-      <span class="member-name">${escapeHtml(user.displayName || 'Unknown')}</span>
-    `;
+    div.innerHTML = `<div class="member-avatar">${avatar}</div><span class="member-name">${escapeHtml(user.displayName || 'Unknown')}</span>`;
     container.appendChild(div);
   }
 }
@@ -2143,62 +2014,49 @@ function toggleMembers() {
   document.getElementById('membersSidebar').classList.toggle('active');
 }
 
-// ==================== IMAGE UPLOAD (Base64 - no Firebase Storage) ====================
-function triggerImageUpload() {
-  document.getElementById('imageUploadInput').click();
-}
+// ========== IMAGE UPLOAD ==========
+function triggerImageUpload() { document.getElementById('imageUploadInput').click(); }
 
-function handleImageUpload(event) {
-  const file = event.target.files[0];
+function handleImageUpload(e) {
+  const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 2 * 1024 * 1024) {
-    alert('Image must be under 2MB (stored as base64).');
-    return;
-  }
+  if (file.size > 2 * 1024 * 1024) return alert('Image must be under 2MB.');
   const reader = new FileReader();
-  reader.onload = (e) => {
-    pendingImageData = e.target.result;
+  reader.onload = ev => {
+    pendingImageData = ev.target.result;
     document.getElementById('uploadPreview').classList.add('active');
     document.getElementById('uploadPreviewImg').src = pendingImageData;
     document.getElementById('uploadPreviewName').textContent = file.name;
   };
   reader.readAsDataURL(file);
-  event.target.value = '';
+  e.target.value = '';
 }
 
 function removeUpload() {
   pendingImageData = null;
   document.getElementById('uploadPreview').classList.remove('active');
-  document.getElementById('uploadPreviewImg').src = '';
 }
 
-// ==================== PFP UPLOAD ====================
-function handlePfpUpload(event) {
-  const file = event.target.files[0];
+// ========== PFP ==========
+function handlePfpUpload(e) {
+  const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 1 * 1024 * 1024) {
-    alert('Profile picture must be under 1MB.');
-    return;
-  }
+  if (file.size > 1024 * 1024) return alert('Profile picture must be under 1MB.');
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = ev => {
     const area = document.getElementById('pfpUploadArea');
-    area.innerHTML = `<img src="${e.target.result}"><div class="pfp-overlay"><i class="fas fa-camera"></i></div>`;
-    area.dataset.url = e.target.result;
+    area.innerHTML = `<img src="${ev.target.result}"><div class="pfp-overlay"><i class="fas fa-camera"></i></div>`;
+    area.dataset.url = ev.target.result;
   };
   reader.readAsDataURL(file);
-  event.target.value = '';
+  e.target.value = '';
 }
 
 async function saveProfile() {
   const name = document.getElementById('profileDisplayName').value.trim();
-  const area = document.getElementById('pfpUploadArea');
-  const photoURL = area.dataset.url || currentUserData.photoURL || '';
-
-  const updates = {};
+  const url = document.getElementById('pfpUploadArea').dataset.url || currentUserData.photoURL || '';
+  const updates = { photoURL: url };
   if (name) updates.displayName = name;
-  updates.photoURL = photoURL;
-
   await db.collection('users').doc(currentUser.uid).update(updates);
   currentUserData = { ...currentUserData, ...updates };
   usersCache[currentUser.uid] = currentUserData;
@@ -2206,30 +2064,28 @@ async function saveProfile() {
   closeModal('profileModal');
 }
 
-// ==================== SERVER ICON UPLOAD ====================
-function previewServerIcon(event) {
-  const file = event.target.files[0];
+// ========== SERVER ICON ==========
+function previewServerIcon(e) {
+  const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 1 * 1024 * 1024) {
-    alert('Server icon must be under 1MB.');
-    return;
-  }
+  if (file.size > 1024 * 1024) return alert('Icon must be under 1MB.');
   const reader = new FileReader();
-  reader.onload = (e) => {
-    serverIconData = e.target.result;
+  reader.onload = ev => {
+    serverIconData = ev.target.result;
     document.getElementById('serverIconUpload').innerHTML = `<img src="${serverIconData}">`;
   };
   reader.readAsDataURL(file);
-  event.target.value = '';
+  e.target.value = '';
 }
 
-// ==================== GIF PICKER (Tenor) ====================
-const TENOR_KEY = 'AIzaSyBJMIUucxOusoVzs4lc-QurCxjlW6Hlsuw'; // Using same API key for demo, ideally use a Tenor key
+// ========== GIF PICKER ==========
+const TENOR_KEY = 'AIzaSyBJMIUucxOusoVzs4lc-QurCxjlW6Hlsuw';
 
 function toggleGifPicker() {
-  const picker = document.getElementById('gifPicker');
-  picker.classList.toggle('active');
-  if (picker.classList.contains('active')) {
+  const p = document.getElementById('gifPicker');
+  p.classList.toggle('active');
+  if (p.classList.contains('active')) {
+    document.getElementById('gifSearchInput').value = '';
     document.getElementById('gifSearchInput').focus();
     loadTrendingGifs();
   }
@@ -2244,35 +2100,26 @@ async function loadTrendingGifs() {
   const grid = document.getElementById('gifGrid');
   grid.innerHTML = '<div class="gif-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
   try {
-    const res = await fetch(`https://tenor.googleapis.com/v2/featured?key=${TENOR_KEY}&limit=30&media_filter=tinygif`);
-    const data = await res.json();
-    renderGifs(data.results);
-  } catch(e) {
-    grid.innerHTML = '<div class="gif-loading">Search for GIFs above</div>';
-  }
+    const r = await fetch(`https://tenor.googleapis.com/v2/featured?key=${TENOR_KEY}&limit=30&media_filter=tinygif`);
+    renderGifs((await r.json()).results);
+  } catch(e) { grid.innerHTML = '<div class="gif-loading">Failed to load</div>'; }
 }
 
 async function searchGifs() {
-  const query = document.getElementById('gifSearchInput').value.trim();
-  if (!query) { loadTrendingGifs(); return; }
+  const q = document.getElementById('gifSearchInput').value.trim();
+  if (!q) return loadTrendingGifs();
   const grid = document.getElementById('gifGrid');
   grid.innerHTML = '<div class="gif-loading"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
   try {
-    const res = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${TENOR_KEY}&limit=30&media_filter=tinygif`);
-    const data = await res.json();
-    renderGifs(data.results);
-  } catch(e) {
-    grid.innerHTML = '<div class="gif-loading">Failed to load GIFs</div>';
-  }
+    const r = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(q)}&key=${TENOR_KEY}&limit=30&media_filter=tinygif`);
+    renderGifs((await r.json()).results);
+  } catch(e) { grid.innerHTML = '<div class="gif-loading">Failed to load</div>'; }
 }
 
 function renderGifs(results) {
   const grid = document.getElementById('gifGrid');
   grid.innerHTML = '';
-  if (!results || results.length === 0) {
-    grid.innerHTML = '<div class="gif-loading">No GIFs found</div>';
-    return;
-  }
+  if (!results?.length) { grid.innerHTML = '<div class="gif-loading">No GIFs found</div>'; return; }
   results.forEach(gif => {
     const url = gif.media_formats?.tinygif?.url || gif.media_formats?.gif?.url;
     if (!url) return;
@@ -2284,15 +2131,14 @@ function renderGifs(results) {
   });
 }
 
-// ==================== SERVER SETTINGS ====================
+// ========== SERVER SETTINGS ==========
 function openServerSettings() {
   if (!currentServerId) return;
   db.collection('servers').doc(currentServerId).get().then(doc => {
     if (!doc.exists) return;
-    const data = doc.data();
-    document.getElementById('editServerName').value = data.name;
-    document.getElementById('deleteServerBtn').style.display =
-      data.ownerId === currentUser.uid ? '' : 'none';
+    const d = doc.data();
+    document.getElementById('editServerName').value = d.name;
+    document.getElementById('deleteServerBtn').style.display = d.ownerId === currentUser.uid ? '' : 'none';
     openModal('serverSettingsModal');
   });
 }
@@ -2306,99 +2152,86 @@ async function saveServerSettings() {
 }
 
 async function leaveServer() {
-  if (!confirm('Are you sure you want to leave this server?')) return;
+  if (!confirm('Leave this server?')) return;
   await db.collection('servers').doc(currentServerId).update({
     members: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
   });
   closeModal('serverSettingsModal');
+  currentServerId = null;
+  currentChannelId = null;
   goHome();
   showEmptyState();
 }
 
 async function deleteServer() {
-  if (!confirm('Are you sure you want to DELETE this server? This cannot be undone.')) return;
+  if (!confirm('DELETE this server? This cannot be undone.')) return;
   await db.collection('servers').doc(currentServerId).delete();
   closeModal('serverSettingsModal');
+  currentServerId = null;
+  currentChannelId = null;
   goHome();
   showEmptyState();
 }
 
-// ==================== INVITE ====================
-function openInviteModal() {
-  openModal('inviteModal');
-}
-
-// Update invite display when modal opens
+// ========== INVITE ==========
 function updateInviteCode() {
   if (!currentServerId) return;
   db.collection('servers').doc(currentServerId).get().then(doc => {
-    if (doc.exists) {
-      document.getElementById('inviteCodeDisplay').textContent = doc.data().inviteCode || 'N/A';
-    }
+    if (doc.exists) document.getElementById('inviteCodeDisplay').textContent = doc.data().inviteCode || 'N/A';
   });
 }
 
 function copyInvite() {
   const code = document.getElementById('inviteCodeDisplay').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const btn = event.target;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
-  });
+  navigator.clipboard.writeText(code);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
 }
 
-// ==================== CONTEXT MENUS ====================
-function showServerContext(e, serverId, data) {
+// ========== CONTEXT MENUS ==========
+function showServerContext(e, id, data) {
   e.preventDefault();
   const menu = document.getElementById('contextMenu');
-  menu.innerHTML = '';
-  menu.innerHTML += `<div class="context-menu-item" onclick="openModal('inviteModal');updateInviteCode();closeContext()"><i class="fas fa-user-plus"></i> Invite People</div>`;
-  if (data.ownerId === currentUser.uid) {
-    menu.innerHTML += `<div class="context-menu-item" onclick="currentServerId='${serverId}';openServerSettings();closeContext()"><i class="fas fa-gear"></i> Server Settings</div>`;
-  }
-  menu.innerHTML += `<div class="context-menu-item danger" onclick="currentServerId='${serverId}';leaveServer();closeContext()"><i class="fas fa-arrow-right-from-bracket"></i> Leave Server</div>`;
+  let html = `<div class="context-menu-item" onclick="currentServerId='${id}';openModal('inviteModal');updateInviteCode();closeContext()"><i class="fas fa-user-plus"></i> Invite People</div>`;
+  if (data.ownerId === currentUser.uid)
+    html += `<div class="context-menu-item" onclick="currentServerId='${id}';openServerSettings();closeContext()"><i class="fas fa-gear"></i> Server Settings</div>`;
+  html += `<div class="context-menu-item danger" onclick="currentServerId='${id}';leaveServer();closeContext()"><i class="fas fa-arrow-right-from-bracket"></i> Leave Server</div>`;
+  menu.innerHTML = html;
   showContextAt(menu, e);
 }
 
 function showMessageContext(e, msgId, data) {
   e.preventDefault();
   const menu = document.getElementById('contextMenu');
-  menu.innerHTML = '';
-  if (data.text) {
-    menu.innerHTML += `<div class="context-menu-item" onclick="navigator.clipboard.writeText('${escapeHtml(data.text).replace(/'/g,"\\'")}');closeContext()"><i class="fas fa-copy"></i> Copy Text</div>`;
-  }
-  if (data.authorId === currentUser.uid) {
-    menu.innerHTML += `<div class="context-menu-item danger" onclick="deleteMessage('${msgId}');closeContext()"><i class="fas fa-trash"></i> Delete Message</div>`;
-  }
+  let html = '';
+  if (data.text) html += `<div class="context-menu-item" onclick="copyText(\`${escapeHtml(data.text).replace(/`/g,'\\`')}\`);closeContext()"><i class="fas fa-copy"></i> Copy Text</div>`;
+  if (data.authorId === currentUser.uid) html += `<div class="context-menu-item danger" onclick="deleteMessage('${msgId}');closeContext()"><i class="fas fa-trash"></i> Delete Message</div>`;
+  if (!html) return;
+  menu.innerHTML = html;
   showContextAt(menu, e);
 }
+
+function copyText(t) { navigator.clipboard.writeText(t); }
 
 function showContextAt(menu, e) {
   menu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
   menu.style.top = Math.min(e.clientY, window.innerHeight - 150) + 'px';
   menu.classList.add('active');
 }
-
-function closeContext() {
-  document.getElementById('contextMenu').classList.remove('active');
-}
-
+function closeContext() { document.getElementById('contextMenu').classList.remove('active'); }
 document.addEventListener('click', closeContext);
 
 async function deleteMessage(msgId) {
-  let collectionPath;
-  if (currentChatType === 'channel') {
-    collectionPath = db.collection('servers').doc(currentServerId)
-      .collection('channels').doc(currentChannelId)
-      .collection('messages');
-  } else if (currentChatType === 'dm') {
-    collectionPath = db.collection('dms').doc(currentDmId)
-      .collection('messages');
-  } else return;
-  await collectionPath.doc(msgId).delete();
+  let ref;
+  if (currentChatType === 'channel')
+    ref = db.collection('servers').doc(currentServerId).collection('channels').doc(currentChannelId).collection('messages');
+  else if (currentChatType === 'dm')
+    ref = db.collection('dms').doc(currentDmId).collection('messages');
+  else return;
+  await ref.doc(msgId).delete();
 }
 
-// ==================== MODALS ====================
+// ========== MODALS ==========
 function openModal(id) {
   document.getElementById(id).classList.add('active');
   if (id === 'profileModal') {
@@ -2408,73 +2241,61 @@ function openModal(id) {
       area.innerHTML = `<img src="${currentUserData.photoURL}"><div class="pfp-overlay"><i class="fas fa-camera"></i></div>`;
       area.dataset.url = currentUserData.photoURL;
     } else {
-      const letter = (currentUserData?.displayName || 'U').charAt(0).toUpperCase();
-      area.innerHTML = `<span id="pfpPreviewLetter" style="font-size:32px;font-weight:700;">${letter}</span><div class="pfp-overlay"><i class="fas fa-camera"></i></div>`;
+      const l = (currentUserData?.displayName || 'U').charAt(0).toUpperCase();
+      area.innerHTML = `<span style="font-size:32px;font-weight:700;">${l}</span><div class="pfp-overlay"><i class="fas fa-camera"></i></div>`;
       area.dataset.url = '';
     }
   }
-  if (id === 'inviteModal') {
-    updateInviteCode();
-  }
+  if (id === 'inviteModal') updateInviteCode();
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.classList.remove('active');
-  });
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
 });
 
-// ==================== IMAGE PREVIEW ====================
 function previewImage(url) {
   document.getElementById('imagePreviewImg').src = url;
   document.getElementById('imagePreview').classList.add('active');
 }
 
-// ==================== HELPERS ====================
+// ========== HELPERS ==========
 function showEmptyState() {
   document.getElementById('emptyState').style.display = 'flex';
   document.getElementById('activeChat').style.display = 'none';
   if (messageUnsub) { messageUnsub(); messageUnsub = null; }
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+function escapeHtml(t) {
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
 }
 
-function formatTime(date) {
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function linkify(text) {
+  return text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#999;text-decoration:underline;">$1</a>');
 }
 
-function formatFullTime(date) {
+function formatTime(d) { return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+
+function formatFullTime(d) {
   const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const isYesterday = date.toDateString() === yesterday.toDateString();
-
-  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  if (isToday) return `Today at ${time}`;
-  if (isYesterday) return `Yesterday at ${time}`;
-  return `${date.toLocaleDateString()} ${time}`;
+  const time = formatTime(d);
+  if (d.toDateString() === now.toDateString()) return `Today at ${time}`;
+  const y = new Date(now); y.setDate(y.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return `Yesterday at ${time}`;
+  return `${d.toLocaleDateString()} ${time}`;
 }
 
-// Close gif picker on outside click
-document.addEventListener('click', (e) => {
-  const picker = document.getElementById('gifPicker');
-  if (picker.classList.contains('active') && !picker.contains(e.target) && !e.target.closest('.input-actions')) {
-    picker.classList.remove('active');
-  }
+// Close pickers on escape / outside click
+document.addEventListener('click', e => {
+  const p = document.getElementById('gifPicker');
+  if (p.classList.contains('active') && !p.contains(e.target) && !e.target.closest('.input-actions'))
+    p.classList.remove('active');
 });
 
-// Keyboard shortcut - Escape to close modals
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
     document.getElementById('gifPicker').classList.remove('active');
